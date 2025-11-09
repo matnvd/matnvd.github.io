@@ -135,10 +135,13 @@
         .dropdown-content {
             display: none;
             position: relative;
-            background-color: rgba(0, 0, 0, 0.9);
+            /* fully transparent background so ASCII background shows through */
+            background: transparent;
             min-width: 200px;
-            padding: 10px 0;
-            z-index: 20;
+            padding: 8px 12px;
+            z-index: 30;
+            border-radius: 6px;
+            border: none;
         }
 
         .dropdown-content.show {
@@ -235,6 +238,7 @@
     </style>
 </head>
 <body>
+    <div id="particles"></div>
     <div id="ascii-bg">
         <pre>
         </pre>
@@ -320,54 +324,58 @@
             document.querySelector('#ascii-bg pre').textContent = data;
         });
 
-        // for particles
+        // for particles (guarded: only run if #particles exists)
         const particlesContainer = document.getElementById('particles');
         const numParticles = 50;
 
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            const size = Math.random() * 2 + 1;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            
-            const tx = (Math.random() - 0.5) * 200;
-            const ty = (Math.random() - 0.5) * 200;
-            particle.style.setProperty('--tx', tx + 'px');
-            particle.style.setProperty('--ty', ty + 'px');
-            
-            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            particle.style.animationDelay = Math.random() * 2 + 's';
-            
-            particlesContainer.appendChild(particle);
+        if (particlesContainer) {
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                const size = Math.random() * 2 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+
+                const tx = (Math.random() - 0.5) * 200;
+                const ty = (Math.random() - 0.5) * 200;
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+
+                particlesContainer.appendChild(particle);
+            }
+
+            for (let i = 0; i < numParticles; i++) {
+                createParticle();
+            }
         }
 
-        for (let i = 0; i < numParticles; i++) {
-            createParticle();
-        }
-
-        // Dropdown functionality
+        // Dropdown functionality (guard attaching listeners)
         const dropdownBtn = document.querySelector('.dropdown-btn');
         const dropdownContent = document.querySelector('.dropdown-content');
 
-        dropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent the window click from firing
-            this.classList.toggle('active');
-            dropdownContent.classList.toggle('show');
-        });
+        if (dropdownBtn && dropdownContent) {
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent the window click from firing
+                this.classList.toggle('active');
+                dropdownContent.classList.toggle('show');
+            });
 
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(event) {
-            // Check if click is outside both button and content
-            if (!event.target.closest('.dropdown')) {
-                dropdownBtn.classList.remove('active');
-                dropdownContent.classList.remove('show');
-            }
-        });
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(event) {
+                // Check if click is outside both button and content
+                if (!event.target.closest('.dropdown')) {
+                    dropdownBtn.classList.remove('active');
+                    dropdownContent.classList.remove('show');
+                }
+            });
+        }
     </script>
 </body>
 </html>
