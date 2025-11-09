@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWC2KYN2W9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-NWC2KYN2W9');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .profile-image {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+
+            .profile-image {
+                width: 180px;
+                height: 180px;
+            }
+
+            .content {
+                text-align: center;
+            }
+
+            .links {
+                justify-content: center;
+            }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.9);
+            min-width: 200px;
+            padding: 10px 0;
+            z-index: 20;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1em;
+            padding: 0;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-arrow {
+            display: inline-block;
+            /* transition: transform 0.3s ease; */
+        }
+
+        .dropdown-btn.active .dropdown-arrow {
+            transform: rotate(90deg);
+        }
+
+        .dropdown-content p {
+            margin: 5px 0;
+            padding: 5px 0;
+            font-size: smaller;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+            padding-bottom: 1px;
+        }
+
+        a:hover {
+            border-bottom-color: #fff;
+            opacity: 0.7;
+        }
+
+        .links {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            border: none;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .links a:hover {
+            opacity: 1;
+        }
+
+        .email {
+            margin-top: 30px;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    
+    <div class="container">
+        <img src="assets/profile.jpg" alt="Mathias Nguyen-Van-Duong" class="profile-image">
+        <div class="content">
+            <h1>Mathias Nguyen-Van-Duong</h1> 
+            
+            <!-- XYZ Role @ XYZ Company | ex. X, Y, Z -->
+            
+            <p>
+                i'm currently a computer science B.S.E. student at <a href="https://www.cs.princeton.edu/">princeton</a>.
+            </p>
+        
+        <p>
+            i'm also minoring in <a href = "https://ua.princeton.edu/fields-study/minors/statistics-and-machine-learning">stats/ml</a> and <a href="https://orfe.princeton.edu/undergraduate/oqds">optimization/quantitative decision science</a>.
+        </p>
+        
+        <p>
+            i occasionally do bjj and read nlp & cv papers.
+        </p>
+
+        <br>
+
+        <div class="dropdown">
+            <button class="dropdown-btn"><span class="dropdown-arrow">›</span>relevant coursework</button>
+            <div class="dropdown-content">
+                <p>COS324 Introduction to Machine Learning</p>
+                <p>COS226 Algorithms and Data Structures</p>
+                <p>ORF245 Fundamentals of Statistics</p>
+                <p>MAT202 Linear Algebra with Applications</p>
+                <p>MAT201 Multivariable Calculus</p>
+                <p>EGR153 Foundations of Engineering: Electricity, Magnetism, and Photonics</p>
+                <p>EGR151 Foundations of Engineering: Mechanics, Energy, and Waves</p>
+            </div>
+        </div>
+        
+        <!-- <p>
+            [ publications ]<br>
+            <a href="arxiv..."> paperxyz </a>
+        </p> -->
+
+        <!-- <p>
+            [ projects ]<br>
+            <a href="github..."> Infoband </a>
+        </p> -->
+        
+        <div class="links">
+            <a href="../assets/resume_11_06_25.pdf" target="_blank">[ résumé ]</a>
+            <a href="https://linkedin.com/in/mathiasnvd" target="_blank">[ linkedin ]</a>
+            <a href="https://github.com/matnvd" target="_blank">[ github ]</a>
+            <!-- <a href="https://www.instagram.com/mathiasnvd/" target="_blank">[ instagram ]</a> -->
+            <!-- google scholar link? -->
+            </div>
+            
+            <p class="email">
+                email me: <a href= "mailto:mathiasnvd07@gmail.com">mathiasnvd07 [at] gmail [dot] com</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        const numParticles = 50;
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 2 + 1;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = (Math.random() - 0.5) * 200;
+            particle.style.setProperty('--tx', tx + 'px');
+            particle.style.setProperty('--ty', ty + 'px');
+            
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        for (let i = 0; i < numParticles; i++) {
+            createParticle();
+        }
+
+        // Dropdown functionality
+        const dropdownBtn = document.querySelector('.dropdown-btn');
+        const dropdownContent = document.querySelector('.dropdown-content');
+
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent the window click from firing
+            this.classList.toggle('active');
+            dropdownContent.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            // Check if click is outside both button and content
+            if (!event.target.closest('.dropdown')) {
+                dropdownBtn.classList.remove('active');
+                dropdownContent.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
