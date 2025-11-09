@@ -323,7 +323,7 @@
 
 
     <script>
-        // ascii
+        // ascii — load multiple frames and morph between them (fallback "old" morph)
         const asciiFiles = [
             'ascii_f1.txt',
             'ascii_f2.txt',
@@ -331,16 +331,82 @@
             'ascii_f4.txt',
             'ascii_f5.txt'
         ];
-        
-        // Randomly select one of the ASCII files
-        const randomFile = asciiFiles[Math.floor(Math.random() * asciiFiles.length)];
-        
-        // Load the randomly selected ASCII art
-        fetch(`assets/ascii_art/${randomFile}`)
-        .then(response => response.text())
-        .then(data => {
-            document.querySelector('#ascii-bg pre').textContent = data;
-        });
+
+        async function loadAsciiFiles(list) {
+            const promises = list.map(name => fetch(`assets/ascii_art/${name}`).then(r => r.text()).catch(() => ''));
+            return Promise.all(promises);
+        }
+
+        function buildGrids(a, b) {
+            const aLines = a.split('\n');
+            const bLines = b.split('\n');
+            const rows = Math.max(aLines.length, bLines.length);
+            const cols = Math.max(
+                ...(aLines.map(l => l.length).concat(bLines.map(l => l.length)))
+            );
+            const padLine = (line, len) => line + ' '.repeat(Math.max(0, len - line.length));
+            const A = [];
+            const B = [];
+            for (let r = 0; r < rows; r++) {
+                A.push(padLine(aLines[r] || '', cols).split(''));
+                B.push(padLine(bLines[r] || '', cols).split(''));
+            }
+            return {A, B, rows, cols};
+        }
+
+        function easeInOut(t) { return t < 0.5 ? 2*t*t : -1 + (4-2*t)*t; }
+
+        function morphAscii(preEl, fromStr, toStr, duration = 1200) {
+            const {A, B, rows, cols} = buildGrids(fromStr, toStr);
+            let start = null;
+            return new Promise(resolve => {
+                function step(ts) {
+                    if (!start) start = ts;
+                    const elapsed = ts - start;
+                    const tRaw = Math.min(1, elapsed / duration);
+                    const t = easeInOut(tRaw);
+                    const lines = [];
+                    for (let r = 0; r < rows; r++) {
+                        let line = '';
+                        for (let c = 0; c < cols; c++) {
+                            const fromCh = A[r][c];
+                            const toCh = B[r][c];
+                            if (fromCh === toCh) line += fromCh;
+                            else line += (Math.random() < t) ? toCh : fromCh;
+                        }
+                        lines.push(line);
+                    }
+                    preEl.textContent = lines.join('\n');
+                    if (tRaw < 1) requestAnimationFrame(step);
+                    else { preEl.textContent = toStr; resolve(); }
+                }
+                requestAnimationFrame(step);
+            });
+        }
+
+        // initialize old-style morphing loop
+        (async function runOldMorph() {
+            const frames = await loadAsciiFiles(asciiFiles);
+            const pre = document.querySelector('#ascii-bg pre');
+            if (!pre) return;
+
+            // start at first frame and loop in order
+            let idx = 0;
+            pre.textContent = frames[idx] || '';
+
+            const hold = 3000;
+            const morphDur = 1200;
+
+            async function loop() {
+                await new Promise(r => setTimeout(r, hold));
+                const next = (idx + 1) % frames.length;
+                await morphAscii(pre, frames[idx] || '', frames[next] || '', morphDur);
+                idx = next;
+                loop();
+            }
+
+            loop();
+        })();
 
         // for particles (guarded: only run if #particles exists)
         const particlesContainer = document.getElementById('particles');
