@@ -142,9 +142,28 @@
 
         p {
             font-size: 1.1em;
-            line-height: 1.8;
+            line-height: 1.5;
             margin-bottom: 20px;
             color: rgba(255, 255, 255, 0.85);
+        }
+
+        .audio-link {
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+            padding-bottom: 1px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .audio-link:hover {
+            border-bottom-color: #fff;
+            opacity: 0.7;
+        }
+
+        .audio-link.playing {
+            opacity: 0.7;
         }
 
         .dropdown {
@@ -264,7 +283,6 @@
         <pre>
         </pre>
     </div>
-    <!-- <div id="particles"></div> -->
     
     <div class="container">
         <img src="assets/profile.jpg" alt="Mathias Nguyen-Van-Duong" class="profile-image">
@@ -282,7 +300,7 @@
         </p>
         
         <p>
-            i occasionally do bjj and read nlp & cv papers. fun fact, i'm 🇺🇸 + 🇫🇷 + 🇰🇷 + 🇻🇳.
+            i occasionally do bjj, read nlp & cv papers, & listen to <span id="arcane-trigger" class="audio-link" role="button" tabindex="0" aria-pressed="false">arcane</span>.<br>fun fact: i'm 🇺🇸 + 🇫🇷 + 🇰🇷 + 🇻🇳.
         </p>
 
         <br>
@@ -463,6 +481,52 @@
                 }
             });
         }
+
+        // Audio trigger for the word "arcane" — toggle play/pause on click or Space/Enter
+        (function() {
+            const trigger = document.getElementById('arcane-trigger');
+            if (!trigger) return;
+
+            // Path to audio file - add your audio file at assets/arcane.mp3
+            const audioSrc = 'assets/arcane.mp3';
+            const audio = new Audio(audioSrc);
+            audio.preload = 'auto';
+
+            function setPlaying(isPlaying) {
+                trigger.classList.toggle('playing', isPlaying);
+                trigger.setAttribute('aria-pressed', String(!!isPlaying));
+            }
+
+            // Toggle play / pause when clicking the trigger
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                try {
+                    if (audio.paused) {
+                        // resume or start
+                        audio.play().then(() => setPlaying(true)).catch(err => {
+                            console.warn('Audio play failed', err);
+                        });
+                    } else {
+                        audio.pause();
+                        setPlaying(false);
+                    }
+                } catch (err) {
+                    console.warn('Audio toggle error', err);
+                }
+            });
+
+            // allow keyboard activation (Enter / Space) to toggle as well
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    trigger.click();
+                }
+            });
+
+            audio.addEventListener('ended', () => setPlaying(false));
+            audio.addEventListener('pause', () => setPlaying(false));
+            audio.addEventListener('play', () => setPlaying(true));
+        })();
     </script>
 </body>
 </html>
