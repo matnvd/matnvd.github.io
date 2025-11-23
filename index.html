@@ -188,6 +188,7 @@
             position: relative;
             display: inline-block;
             cursor: pointer;
+            margin-bottom: 24px;
         }
 
         .dropdown-content {
@@ -195,7 +196,8 @@
             position: relative;
             background: transparent;
             min-width: 200px;
-            padding: 8px 12px;
+            padding: 8px 0;
+            margin-left: 16px;
             z-index: 30;
             border-radius: 6px;
             border: none;
@@ -247,7 +249,7 @@
         }
 
         .links {
-            margin-top: 40px;
+            margin-top: 20px;
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
@@ -309,7 +311,7 @@
             <!-- XYZ Role @ XYZ Company | ex. X, Y, Z -->
             
             <p>
-                i'm currently a computer science b.s.e. student at <a href="https://www.princeton.edu/" target="_blank">princeton</a>.
+                i'm currently a computer science b.s.e. student at princeton.
             </p>
         
         <p>
@@ -320,6 +322,20 @@
             i occasionally do bjj, read nlp & cv papers, & listen to <span id="arcane-trigger" class="audio-link" role="button" tabindex="0" aria-pressed="false">arcane</span>.<span id="play-pause-btn" class="play-button" role="button" tabindex="0">▶</span><br>fun fact: i'm 🇺🇸 + 🇫🇷 + 🇰🇷 + 🇻🇳.
         </p>
 
+        <br>
+
+        <!-- <p>
+            [ publications ]<br>
+            <a href="arxiv..."> paperxyz </a>
+        </p> -->
+
+        <div class="dropdown">
+            <button class="dropdown-btn active"><span class="dropdown-arrow">›</span>projects</button>
+            <div class="dropdown-content show">
+                [ <a href="https://github.com/matnvd/infoband">InfoBand</a> ] - An NFC Flutter Companion App
+            </div>
+        </div>
+        
         <br>
 
         <div class="dropdown">
@@ -335,16 +351,6 @@
                 <p>WRI143 Priceless (Seminar on Value)</p>
             </div>
         </div>
-        
-        <!-- <p>
-            [ publications ]<br>
-            <a href="arxiv..."> paperxyz </a>
-        </p> -->
-
-        <!-- <p>
-            [ projects ]<br>
-            <a href="github..."> Infoband </a>
-        </p> -->
 
         <div class="links">
             <!-- <a href="../assets/resume_11_09_25.pdf" target="_blank">[ résumé ]</a> -->
@@ -478,26 +484,29 @@
             }
         }
 
-        // dropdown functionality (guard attaching listeners)
-        const dropdownBtn = document.querySelector('.dropdown-btn');
-        const dropdownContent = document.querySelector('.dropdown-content');
-
-        if (dropdownBtn && dropdownContent) {
-            dropdownBtn.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent the window click from firing
-                this.classList.toggle('active');
-                dropdownContent.classList.toggle('show');
-            });
-
-            // close dropdown when clicking outside
-            window.addEventListener('click', function(event) {
-                // Check if click is outside both button and content
-                if (!event.target.closest('.dropdown')) {
-                    dropdownBtn.classList.remove('active');
-                    dropdownContent.classList.remove('show');
-                }
-            });
-        }
+        // dropdown functionality - handle all dropdowns independently
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const dropdownBtn = dropdown.querySelector('.dropdown-btn');
+            const dropdownContent = dropdown.querySelector('.dropdown-content');
+            
+            if (dropdownBtn && dropdownContent) {
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    dropdownContent.classList.toggle('show');
+                });
+            }
+        });
+        
+        // close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.dropdown-content').forEach(content => content.classList.remove('show'));
+            }
+        });
 
         // audio trigger for arcane
         (function() {
