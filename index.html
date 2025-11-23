@@ -193,7 +193,6 @@
         .dropdown-content {
             display: none;
             position: relative;
-            /* fully transparent background so ASCII background shows through */
             background: transparent;
             min-width: 200px;
             padding: 8px 12px;
@@ -282,7 +281,7 @@
             opacity: 0.2;
             pointer-events: none;
             font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-            color: #fff; /* Or any color you want */
+            color: #fff;
             white-space: pre;
             overflow: hidden;
             font-size: 4.4px;
@@ -291,7 +290,7 @@
         }
 
         #ascii-bg pre {
-            letter-spacing: 0.6px; /* Increase this value for more stretch */
+            letter-spacing: 0.6px;
         }
     </style>
 </head>
@@ -363,7 +362,6 @@
 
 
     <script>
-        // ascii — load multiple frames and morph between them (fallback "old" morph)
         const asciiFiles = [
             'ascii_f1.txt',
             'ascii_f2.txt',
@@ -480,7 +478,7 @@
             }
         }
 
-        // Dropdown functionality (guard attaching listeners)
+        // dropdown functionality (guard attaching listeners)
         const dropdownBtn = document.querySelector('.dropdown-btn');
         const dropdownContent = document.querySelector('.dropdown-content');
 
@@ -491,7 +489,7 @@
                 dropdownContent.classList.toggle('show');
             });
 
-            // Close dropdown when clicking outside
+            // close dropdown when clicking outside
             window.addEventListener('click', function(event) {
                 // Check if click is outside both button and content
                 if (!event.target.closest('.dropdown')) {
@@ -501,7 +499,7 @@
             });
         }
 
-        // Audio trigger for the word "arcane" — toggle play/pause on click or Space/Enter
+        // audio trigger for arcane
         (function() {
             const trigger = document.getElementById('arcane-trigger');
             const playPauseBtn = document.getElementById('play-pause-btn');
@@ -523,12 +521,12 @@
             function toggleAudio() {
                 try {
                     if (audio.paused) {
-                        // Show button on first play
+                        // show button on first play
                         if (!hasPlayed) {
                             playPauseBtn.classList.add('visible');
                             hasPlayed = true;
                         }
-                        // resume or start
+                        // resume/start
                         audio.play().then(() => setPlaying(true)).catch(err => {
                             console.warn('Audio play failed', err);
                         });
@@ -541,19 +539,19 @@
                 }
             }
 
-            // Toggle play / pause when clicking the trigger
+            // toggle play / pause
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 toggleAudio();
             });
 
-            // Toggle play / pause when clicking the button
+            // same thing
             playPauseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 toggleAudio();
             });
 
-            // allow keyboard activation (Enter / Space) to toggle as well
+            // keyboard activation
             trigger.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -568,7 +566,7 @@
                 }
             });
 
-            // Hover effect for play/pause button
+            // hover effect
             playPauseBtn.addEventListener('mouseenter', () => {
                 playPauseBtn.style.opacity = '1';
             });
