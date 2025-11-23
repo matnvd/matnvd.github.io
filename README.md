@@ -1,2 +1,4 @@
 # matnvd.github.io
-personal website
+personal website written in HTML/CSS
+
+... sorry not sorry for the audio
