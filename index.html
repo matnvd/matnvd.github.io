@@ -191,20 +191,32 @@
             margin-bottom: 24px;
         }
 
+        /* Animated dropdown content: use max-height + opacity + translate for smooth slide/fade */
         .dropdown-content {
-            display: none;
+            display: block;
             position: relative;
             background: transparent;
             min-width: 200px;
-            padding: 8px 0;
+            padding: 0;
             margin-left: 16px;
             z-index: 30;
             border-radius: 6px;
             border: none;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: max-height 360ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, transform 260ms cubic-bezier(.2,.8,.2,1);
+            pointer-events: none;
         }
 
+        /* Visible/open state */
         .dropdown-content.show {
-            display: block;
+            max-height: 480px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: max-height 420ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease 40ms, transform 320ms cubic-bezier(.2,.8,.2,1);
+            pointer-events: auto;
         }
 
         .dropdown-btn {
@@ -222,7 +234,8 @@
 
         .dropdown-arrow {
             display: inline-block;
-            /* transition: transform 0.3s ease; */
+            transition: transform 260ms cubic-bezier(.2,.8,.2,1);
+            transform-origin: center;
         }
 
         .dropdown-btn.active .dropdown-arrow {
@@ -330,9 +343,12 @@
         </p> -->
 
         <div class="dropdown">
-            <button class="dropdown-btn active"><span class="dropdown-arrow">›</span>projects</button>
-            <div class="dropdown-content show">
-                [ <a href="https://github.com/matnvd/infoband" target="_blank">InfoBand</a> ] - An NFC Flutter Companion App
+            <!-- class="dropdown-btw active" -->
+            <button class="dropdown-btn"><span class="dropdown-arrow">›</span>projects</button>
+            <!-- class="dropdown-content show" -->
+            <div class="dropdown-content">
+                <p>[ <a href="https://github.com/matnvd/infoband" target="_blank">InfoBand</a> ] - An NFC Flutter Companion App</p>
+                <p>[ <a href="https://github.com/matnvd/matnvd.github.io" target="_blank">mathiasnvd.com</a> ] - A Personal Website</p>
             </div>
         </div>
         
@@ -349,6 +365,7 @@
                 <p>EGR153 Foundations of Engineering: Electricity, Magnetism, and Photonics</p>
                 <p>EGR151 Foundations of Engineering: Mechanics, Energy, and Waves</p>
                 <p>WRI143 Priceless (Seminar on Value)</p>
+                <p>FRS139 Driverless Cars (Seminar on Social Impact)</p>
             </div>
         </div>
 
