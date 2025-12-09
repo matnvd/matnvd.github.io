@@ -199,6 +199,7 @@
             min-width: 200px;
             padding: 0;
             margin-left: 16px;
+            margin-bottom: 0;
             z-index: 30;
             border-radius: 6px;
             border: none;
@@ -206,7 +207,7 @@
             max-height: 0;
             opacity: 0;
             transform: translateY(-6px);
-            transition: max-height 360ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, transform 260ms cubic-bezier(.2,.8,.2,1);
+            transition: max-height 360ms cubic-bezier(.2,.8,.2,1), opacity 220ms ease, transform 260ms cubic-bezier(.2,.8,.2,1), margin-bottom 360ms cubic-bezier(.2,.8,.2,1);
             pointer-events: none;
         }
 
@@ -215,7 +216,8 @@
             max-height: 480px;
             opacity: 1;
             transform: translateY(0);
-            transition: max-height 420ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease 40ms, transform 320ms cubic-bezier(.2,.8,.2,1);
+            margin-bottom: -16px;
+            transition: max-height 420ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease 40ms, transform 320ms cubic-bezier(.2,.8,.2,1), margin-bottom 420ms cubic-bezier(.2,.8,.2,1);
             pointer-events: auto;
         }
 
