@@ -360,7 +360,7 @@
             <!-- class="dropdown-content show" -->
             <div class="dropdown-content">
                 <p>[ <a href="https://github.com/matnvd/infoband" target="_blank">InfoBand</a> ] - An NFC Flutter Companion App</p>
-                <p>[ <a href="https://github.com/matnvd/matnvd.github.io" target="_blank">mathiasnvd.com</a> ] - A Personal Website</p>
+                <p>[ <a href="https://github.com/matnvd/matnvd.github.io" target="_blank">mathiasnvd.com</a> ] - My Personal Website</p>
             </div>
         </div>
         
@@ -383,15 +383,16 @@
 
         <div class="links">
             <!-- <a href="../assets/resume_11_09_25.pdf" target="_blank">[ résumé ]</a> -->
+            <a href="#" id="copy-email" data-email="mathiasnvd07@gmail.com">[ email ]</a>
             <a href="https://linkedin.com/in/mathiasnvd" target="_blank">[ linkedin ]</a>
             <a href="https://github.com/matnvd" target="_blank">[ github ]</a>
-            <a href="https://www.instagram.com/mathiasnvd/" target="_blank">[ instagram ]</a>
+            <!-- <a href="https://www.instagram.com/mathiasnvd/" target="_blank">[ instagram ]</a> -->
             <!-- google scholar link? -->
             </div>
             
-            <p class="email">
+            <!-- <p class="email">
                 email me: <a href= "mailto:mathiasnvd07@gmail.com">mathiasnvd07 [at] gmail [dot] com</a>
-            </p>
+            </p> -->
         </div>
     </div>
 
@@ -615,6 +616,25 @@
             audio.addEventListener('ended', () => setPlaying(false));
             audio.addEventListener('pause', () => setPlaying(false));
             audio.addEventListener('play', () => setPlaying(true));
+        })();
+
+        // click-to-copy email link
+        (function() {
+            const copyLink = document.getElementById('copy-email');
+            if (!copyLink) return;
+            const email = copyLink.getAttribute('data-email') || 'mathiasnvd07@gmail.com';
+            copyLink.addEventListener('click', async function(e) {
+                e.preventDefault();
+                try {
+                    await navigator.clipboard.writeText(email);
+                    const prev = copyLink.textContent;
+                    copyLink.textContent = '[ copied ]';
+                    setTimeout(() => { copyLink.textContent = prev; }, 1400);
+                } catch (err) {
+                    // fallback: show the email in an alert if clipboard isn't available
+                    alert('Email copied failed. Address:\n' + email);
+                }
+            });
         })();
     </script>
 </body>
