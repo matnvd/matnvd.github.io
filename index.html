@@ -309,6 +309,21 @@
         #ascii-bg pre {
             letter-spacing: 0.6px;
         }
+        /* small top-right updated badge */
+        .updated-badge {
+            position: fixed;
+            top: 6px;
+            right: 6px;
+            z-index: 60;
+            background: rgba(0, 0, 0, 0);
+            color: #fff;
+            font-size: 0.9em;
+            padding: 6px 8px;
+            border-radius: 6px;
+            /* border: 1px solid rgba(255,255,255,0.06); */
+            opacity: 0.4;
+            font-family: inherit;
+        }
     </style>
 </head>
 <body>
@@ -317,6 +332,7 @@
         <pre>
         </pre>
     </div>
+    <div class="updated-badge" id="updated-badge">updated …</div>
     
     <div class="container">
         <img src="assets/profile.jpg" alt="Mathias Nguyen-Van-Duong" class="profile-image">
@@ -635,6 +651,31 @@
                     alert('Email copied failed. Address:\n' + email);
                 }
             });
+        })();
+    </script>
+    <script>
+        (function() {
+            const el = document.getElementById('updated-badge');
+            if (!el) return;
+            function fmtDate(d) {
+                if (!(d instanceof Date) || isNaN(d)) return '';
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${day}`;
+            }
+
+            let d = null;
+            try {
+                if (document && document.lastModified) {
+                    const parsed = new Date(document.lastModified);
+                    if (!isNaN(parsed)) d = parsed;
+                }
+            } catch (e) { d = null; }
+
+            if (!d) d = new Date();
+            const out = fmtDate(d) || '';
+            el.textContent = 'updated: ' + out;
         })();
     </script>
 </body>
