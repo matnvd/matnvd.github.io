@@ -24,6 +24,40 @@
             box-sizing: border-box;
         }
 
+        /* custom cursor */
+        @media (hover: hover) and (pointer: fine) {
+            .cursor-dot,
+            .cursor-outline {
+                pointer-events: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                transform: translate(-50%, -50%);
+                border-radius: 50%;
+                z-index: 999999;
+                transition: opacity 0.3s ease-in-out, transform 0.3s ease-out;
+            }
+
+            /* .cursor-dot {
+                width: 6px;
+                height: 6px;
+                background-color: #fff;
+            } */
+
+            .cursor-outline {
+                width: 30px;
+                height: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+            
+            /* Effect when hovering over links */
+            .cursor-hover {
+                transform: translate(-50%, -50%) scale(1.5);
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: #fff;
+            }
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
             background: #000;
@@ -335,6 +369,8 @@
     </style>
 </head>
 <body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
     <div id="particles"></div>
     <div id="ascii-bg">
         <pre>
@@ -434,6 +470,33 @@
 
 
     <script>
+        // CUSTOM CURSOR SCRIPT
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Simple move for dot
+            dot.style.left = `${posX}px`;
+            dot.style.top = `${posY}px`;
+
+            // Smooth move for outline
+            outline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Add hover effects for all clickable items
+        const clickables = document.querySelectorAll('a, button, .audio-link, .dropdown-btn');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => outline.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => outline.classList.remove('cursor-hover'));
+        });
+        
+        // ASCII ANIM SCRIPT
         const asciiFiles = [
             'ascii_f1.txt',
             'ascii_f2.txt',
@@ -518,7 +581,7 @@
             loop();
         })();
 
-        // for particles (guarded: only run if #particles exists)
+        // PARTICLES SCRIPT (guarded: only run if #particles exists)
         const particlesContainer = document.getElementById('particles');
         const numParticles = 50;
 
@@ -550,7 +613,7 @@
             }
         }
 
-        // dropdown functionality - handle all dropdowns independently
+        // DROPDOWN functionality - handle all dropdowns independently
         const dropdowns = document.querySelectorAll('.dropdown');
         
         dropdowns.forEach(dropdown => {
@@ -574,7 +637,7 @@
             }
         });
 
-        // audio trigger for arcane
+        // ARCANE AUDIO TRIGGER SCRIPT
         (function() {
             const trigger = document.getElementById('arcane-trigger');
             const playPauseBtn = document.getElementById('play-pause-btn');
@@ -656,7 +719,7 @@
             audio.addEventListener('play', () => setPlaying(true));
         })();
 
-        // click-to-copy email link
+        // EMAIL click-to-copy link
         (function() {
             const copyLink = document.getElementById('copy-email');
             if (!copyLink) return;
@@ -675,7 +738,9 @@
             });
         })();
     </script>
+
     <script>
+        // UPDATED BADGE SCRIPT
         (function() {
             const el = document.getElementById('updated-badge');
             if (!el) return;
