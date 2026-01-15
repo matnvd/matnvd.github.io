@@ -16,6 +16,7 @@
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
     <link rel="shortcut icon" href="/assets/favicon.ico" />
     <link rel="apple-touch-icon" href="/assets/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         * {
             margin: 0;
@@ -167,17 +168,17 @@
         }
 
         .play-button {
-            margin-left: 8px;
+            margin-left: 5px;
             cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+            opacity: 0.4;
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out;
         }
 
         .play-button.visible {
             opacity: 0.7;
             visibility: visible;
-            transition: opacity 0.3s ease-in-out, visibility 0s linear;
+            transition: opacity 0.3s ease-in-out;
         }
 
         .play-button:hover {
@@ -327,6 +328,10 @@
             opacity: 0.4;
             font-family: inherit;
         }
+
+        .fa {
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -353,7 +358,8 @@
         </p>
         
         <p>
-            in my free time i do bjj, boulder, & listen to <span id="arcane-trigger" class="audio-link" role="button" tabindex="0" aria-pressed="false">arcane</span> 🔊.<span id="play-pause-btn" class="play-button" role="button" tabindex="0">▶</span><br>fun fact: i'm 🇺🇸 + 🇫🇷 + 🇰🇷 + 🇻🇳.
+            in my free time i do bjj, boulder, & bop to arcane<span id="arcane-trigger" class="audio-link" role="button" tabindex="0" aria-pressed="false"></span><span id="play-pause-btn" class="play-button" role="button" tabindex="0"><i class="fa fa-volume-up fa-sm" style="color:white;opacity:1"></i></span>.
+            <br>fun fact: i'm 🇺🇸 + 🇫🇷 + 🇰🇷 + 🇻🇳.
         </p>
 
         <br>
@@ -583,7 +589,7 @@
             function setPlaying(isPlaying) {
                 trigger.classList.toggle('playing', isPlaying);
                 trigger.setAttribute('aria-pressed', String(!!isPlaying));
-                playPauseBtn.textContent = isPlaying ? '⏸' : '▶';
+                playPauseBtn.innerHTML = isPlaying ? '⏸' : '▶';
                 playPauseBtn.setAttribute('aria-pressed', String(!!isPlaying));
             }
 
@@ -593,6 +599,8 @@
                         // show button on first play
                         if (!hasPlayed) {
                             playPauseBtn.classList.add('visible');
+                            // Switch from volume icon to play button
+                            playPauseBtn.innerHTML = '▶';
                             hasPlayed = true;
                         }
                         // resume/start
