@@ -35,19 +35,21 @@
                 transform: translate(-50%, -50%);
                 border-radius: 50%;
                 z-index: 999999;
-                transition: opacity 0.3s ease-in-out, transform 0.3s ease-out;
+                transition: opacity 0.5s ease-in-out, transform 0.3s ease-out;
             }
 
             /* .cursor-dot {
                 width: 6px;
                 height: 6px;
                 background-color: #fff;
+                opacity: 0;
             } */
 
             .cursor-outline {
                 width: 30px;
                 height: 30px;
                 border: 1px solid rgba(255, 255, 255, 0.5);
+                opacity: 0;
             }
             
             /* Effect when hovering over links */
@@ -489,8 +491,14 @@
             }, { duration: 500, fill: "forwards" });
         });
 
+        // only show after cursor outline goes to mouse
+        window.addEventListener('mousemove', () => {
+            dot.style.opacity = "1";
+            outline.style.opacity = "1";
+        }, { once: true });
+
         // Add hover effects for all clickable items
-        const clickables = document.querySelectorAll('a, button, .audio-link, .dropdown-btn');
+        const clickables = document.querySelectorAll('a, button, .audio-link, .dropdown-btn, .fa');
         clickables.forEach(el => {
             el.addEventListener('mouseenter', () => outline.classList.add('cursor-hover'));
             el.addEventListener('mouseleave', () => outline.classList.remove('cursor-hover'));
