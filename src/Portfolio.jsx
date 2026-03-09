@@ -265,6 +265,7 @@ const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct",
 const fmtMonths = (m) => `${MONTH_ABBR[(m - 1) % 12]} ${Math.floor((m - 1) / 12)}`;
 
 const COLOR_MAP = {
+  // experience colors
   "category-dev": "#6495ed",
   "category-ml/ai": "tomato",
   "category-quant": "#daedf3",
@@ -286,6 +287,7 @@ const COLOR_MAP = {
   "technologies-python": "#ff69b4",
   "technologies-django": "#b0e0e6",
 
+  // project colors
   "category-mobile-app": "#6495ed", // same as dev
   "category-cloud-automation": "#00b953",
   "category-scraping": "tan",
@@ -303,6 +305,21 @@ const COLOR_MAP = {
   "technologies-firebase": "#deb887", // same as nextjs
   "technologies-gradio": "#f3add0", //same as newton
   "technologies-git": "#daedf3", // same as quant
+
+  // coursework colors
+  "category-computer-science": "tomato", // same as ml/ai
+  "category-operations-research-financial-engineering": "#87ceeb", // same as data
+  "category-mathematics": "#6495ed", // same as dev
+  "category-physics": "plum", // same as figma/gcp
+  "category-seminar": "#daedf3", // same as figma
+
+  "technologies-research": "#eeb7ee", // same as research/rag
+  "technologies-jupyter": "#ffe4e1", // same as jupyter/colab
+  "technologies-matlab": "#b0e0e6", // same as django
+  "technologies-latex": "#1ee477", // same as pinecone
+  "technologies-java": "#ff98cb", // same as arxiv
+  "technologies-r": "#deb887", // same as nextjs
+  "technologies-solidworks": "#dfcaae", // same as railway
 };
 
 const slugify = (s) =>
@@ -849,6 +866,30 @@ export default function Portfolio() {
     return () => clearTimeout(timer);
   }, []);
 
+  // useEffect(() => {
+  //   document.body.style.overflowY = 'scroll';
+  //   return () => {
+  //     document.body.style.overflowY = '';
+  //   };
+  // }, []);
+
+  // for now hide scrollbar. once get more experiences/projects, // update so that u use code block above
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      * {
+        scrollbar-width: none;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   const copyEmail = () => {
     navigator.clipboard?.writeText("mathiasnvd07@gmail.com");
     setCopied(true);
@@ -877,12 +918,13 @@ export default function Portfolio() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(6, 1fr)",
+            gridTemplateRows: "auto auto",
             gap: "0 8px",
             padding: "8px 0",
             background: "var(--background)",
           }}
         >
-          <div style={{ gridColumn: isMobile ? "span 6" : "span 3", fontWeight: 700 }}>
+          <div style={{ gridColumn: isMobile ? "span 6" : "span 2", fontWeight: 700 }}>
             <div style={{ display: "inline-flex", alignItems: "flex-start" }}>
               <a href="#" style={{ display: "block" }}>
                 <div
@@ -910,8 +952,9 @@ export default function Portfolio() {
           <div
             className="nav-links"
             style={{
-              gridColumn: isMobile ? "2 / span 5" : "4 / span 2",
+              gridColumn: isMobile ? "2 / span 5" : "3 / span 2",
               fontWeight: 700,
+              textAlign: "center",
             }}
           >
             <span onClick={copyEmail} style={{ cursor: "pointer" }}>
@@ -931,7 +974,7 @@ export default function Portfolio() {
             style={{
               textAlign: isMobile ? "left" : "right",
               fontWeight: 700,
-              ...(isMobile ? { gridColumn: "4 / span 3" } : {}),
+              ...(isMobile ? { gridColumn: "4 / span 3" } : { gridColumn: "5 / span 2" }),
               display: "flex",
               flexDirection: "column",
             }}
@@ -941,26 +984,57 @@ export default function Portfolio() {
               Nicole Ho
             </a>'s site</span>
           </div>
+
+          <div
+            style={{
+              gridRow: 2,
+              gridColumn: "1 / -1",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "8px",
+              fontFamily: accentFontFamily,
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              paddingTop: "80px",
+              paddingBottom: "8px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <button
+                onClick={() => setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length)}
+                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+                onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
+              >&lt;</button>
+              <span style={{ display: "inline-block", textAlign: "center", width: "10ch" }}>{ TABLE_NAMES[tableIndex] }</span>
+              <button
+                onClick={() => setTableIndex((tableIndex + 1) % TABLE_NAMES.length)}
+                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+                onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
+              >&gt;</button>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
+              {TABLE_NAMES.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    backgroundColor: i === tableIndex ? "var(--foreground)" : "var(--gray-400)",
+                    transition: "background-color 0.15s",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* ─── Main Content ─── */}
-      <main style={{ paddingTop: isMobile ? "40px" : "160px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "32px", fontFamily: accentFontFamily, fontSize: "1.5rem", fontWeight: 700 }}>
-          <button
-            onClick={() => setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length)}
-            style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
-            onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
-          >&lt;</button>
-          <span style={{ display: "inline-block", textAlign: "center", width: "10ch" }}>{ TABLE_NAMES[tableIndex] }</span>
-          <button
-            onClick={() => setTableIndex((tableIndex + 1) % TABLE_NAMES.length)}
-            style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
-            onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
-            onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
-          >&gt;</button>
-        </div>
+      <main style={{ paddingTop: isMobile ? "20px" : "80px" }}>
         <section style={{ width: "100%", paddingBottom: isMobile ? "16px" : "8px" }}>
           {/* Column Headers */}
           <div
