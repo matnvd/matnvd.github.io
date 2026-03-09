@@ -2,77 +2,94 @@ import { useEffect, useRef, useState } from "react";
 
 // ─── Data ───────────────────────────────────────────────────────────
 const PROJECTS = [
-  { 
-    title: "ASU Bermuda Institute of Ocean Sciences (BIOS)", 
-    slug: "asu-bios", 
-    year: "2026", 
-    month: 7, 
-    category: ["Dev", "Data"], 
-    role: "Incoming Database Development Intern", 
+  {
+    title: "ASU Bermuda Institute of Ocean Sciences (BIOS)",
+    slug: "asu-bios",
+    year: "2026",
+    month: 7,
+    duration: 2,
+    category: ["Dev", "Data"],
+    role: "Incoming Database Development Intern",
     technologies: ["Python", "PostgreSQL"], // update
-    url: "https://bios.asu.edu/" 
+    url: "https://bios.asu.edu/"
   },
-  { 
-    title: "Hoagie.io (Princeton Application System)", 
-    slug: "hoagie-io", 
-    year: "2025", 
-    month: 9, 
-    category: ["Dev", "Design"], 
-    role: "HoagieMeal PM & Full-Stack Developer", 
-    technologies: ["Django", "Next.js", "PostgreSQL", "Figma"], 
-    url: "https://hoagie.io/" 
+  {
+    title: "Hoagie.io (Princeton Application System)",
+    slug: "hoagie-io",
+    year: "2025",
+    month: 9,
+    duration: "present",
+    category: ["Dev", "Design"],
+    role: "HoagieMeal PM & Full-Stack Developer",
+    technologies: ["Django", "Next.js", "PostgreSQL", "Figma"],
+    url: "https://hoagie.io/"
   },
-  { 
-    title: "Princeton AI Review", 
-    slug: "princeton-ai-review", 
-    year: "2026", 
-    month: 1, 
-    category: ["Dev", "Data"], 
-    role: "Data & Archives Lead", 
-    technologies: ["Django", "Railway", "SupaBase",], 
+  {
+    title: "Princeton AI Review",
+    slug: "pair",
+    year: "2026",
+    month: 1,
+    duration: "present",
+    category: ["Dev", "Data"],
+    role: "Data & Archives Lead",
+    technologies: ["Django", "Railway", "SupaBase",],
     url: "https://not_yet_made/"  // update
   },
-  { 
-    title: "Princeton Vision and Learning Lab", 
-    slug: "pvll-research", 
-    year: "2025", 
-    month: 12, 
-    category: ["Research", "ML/AI", "Dev"], 
-    role: "Undergraduate Computer Vision Researcher", 
-    technologies: ["Python", "Blender", "Newton"], 
-    url: "https://pvl.cs.princeton.edu/" 
+  {
+    title: "Princeton Vision and Learning Lab",
+    slug: "pvl",
+    year: "2025",
+    month: 12,
+    duration: "present",
+    category: ["Research", "ML/AI", "Dev"],
+    role: "Undergraduate Computer Vision Researcher",
+    technologies: ["Python", "Blender", "Newton"],
+    url: "https://pvl.cs.princeton.edu/"
   },
-  { 
-    title: "SIMA Princeton Research Team", 
-    slug: "sima-research", 
-    year: "2026", 
-    month: 1, 
-    category: ["Quant", "Research"], 
-    role: "Quantitative Research Associate, Real Estate Team", 
-    technologies: ["GEE", "Python", "Jupyter/Colab"], 
+  {
+    title: "SIMA Princeton Research Team",
+    slug: "sima",
+    year: "2026",
+    month: 1,
+    duration: "present",
+    category: ["Quant", "Research"],
+    role: "Quantitative Research Associate, Real Estate Team",
+    technologies: ["GEE", "Python", "Jupyter/Colab"],
     url: "https://www.simainsights.com/" // update?
   },
-  { 
-    title: "Princeton Quantitative Traders", 
-    slug: "pqt-trading", 
-    year: "2025", 
-    month: 9, 
-    category: ["Quant", "ML/AI"], 
-    role: "Competitor", 
-    technologies: ["Kaggle", "Jupyter/Colab"], 
-    url: "https://princeton-quant.com/" 
+  {
+    title: "Princeton Quantitative Traders",
+    slug: "pqt",
+    year: "2025",
+    month: 9,
+    duration: "present",
+    category: ["Quant", "ML/AI"],
+    role: "Competitor",
+    technologies: ["Kaggle", "Jupyter/Colab"],
+    url: "https://princeton-quant.com/"
   },
-  { 
-    title: "Princeton ACM", 
-    slug: "princeton-acm", 
-    year: "2025", 
-    month: 9, 
-    category: ["ML/AI", "Research"], 
-    role: "NLP & CV & QFE Reading Group Member", 
-    technologies: ["arXiv"], 
-    url: "https://princetonacm.github.io/" 
+  {
+    title: "Princeton ACM",
+    slug: "princeton-acm",
+    year: "2025",
+    month: 9,
+    duration: "present",
+    category: ["ML/AI", "Research"],
+    role: "NLP & CV & QFE Reading Group Member",
+    technologies: ["arXiv"],
+    url: "https://princetonacm.github.io/"
   }
 ].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
+
+const toMonths = (year, month) => parseInt(year) * 12 + month;
+const NUMERIC_MAX = Math.max(...PROJECTS.filter(p => typeof p.duration === "number").map(p => toMonths(p.year, p.month) + p.duration));
+const effectiveDuration = (p) => p.duration === "present" ? NUMERIC_MAX - toMonths(p.year, p.month) : p.duration;
+const TIMELINE_MIN = Math.min(...PROJECTS.map(p => toMonths(p.year, p.month)));
+const TIMELINE_MAX = Math.max(...PROJECTS.map(p => toMonths(p.year, p.month) + effectiveDuration(p)));
+const TIMELINE_SPAN = TIMELINE_MAX - TIMELINE_MIN;
+
+const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmtMonths = (m) => `${MONTH_ABBR[(m - 1) % 12]} ${Math.floor((m - 1) / 12)}`;
 
 const COLOR_MAP = {
   "category-dev": "#6495ed",
@@ -158,9 +175,10 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol }) {
-  const { title, year, slug, role, url, category, technologies } = project;
-  const showYear = prevYear !== year;
+function ProjectRow({ project, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst }) {
+  const { title, year, month, slug, role, url, category, technologies } = project;
+  const barLeft = (toMonths(year, month) - TIMELINE_MIN) / TIMELINE_SPAN;
+  const barWidth = effectiveDuration(project) / TIMELINE_SPAN;
   const isHovered = hovered?.slug === slug;
   const anyHovered = !!hovered;
   const hasActive = !!(active?.category || active?.technologies);
@@ -181,18 +199,31 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
           fontSize: "inherit",
         }}
       >
-        {/* Year */}
+        {/* Timeline bar */}
         <div
           style={{
-            fontWeight: 700,
             paddingTop: "8px",
-            borderTop: showYear ? "1px solid var(--gray-300)" : "none",
+            paddingBottom: "8px",
             opacity: revealed ? 1 : 0,
-            transition: "color 0.15s, opacity 0.6s",
-            color: dimmed && !(hovered?.year === year) ? "var(--gray-500)" : "inherit",
+            transition: "opacity 0.6s",
+            display: "flex",
+            alignItems: "center",
+            borderTop: isFirst ? "1px solid var(--gray-300)" : undefined,
           }}
         >
-          {showYear ? year : ""}
+          <div style={{ position: "relative", width: "100%", height: "1px", backgroundColor: "var(--gray-300)" }}>
+            <div
+              style={{
+                position: "absolute",
+                top: "-2px",
+                left: `${barLeft * 100}%`,
+                width: `${barWidth * 100}%`,
+                height: "5px",
+                backgroundColor: dimmed ? "var(--gray-300)" : getColor("category", category[0]),
+                transition: "background-color 0.15s",
+              }}
+            />
+          </div>
         </div>
 
         {/* Title */}
@@ -570,8 +601,12 @@ export default function Portfolio() {
               color: "#fff",
             }}
           >
-            <div style={{ gridColumn: "span 1", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
-              Year
+            <div style={{ gridColumn: "span 1", paddingTop: "4px", borderTop: "1px solid var(--gray-300)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>{fmtMonths(TIMELINE_MIN)}</span>
+                <span>{fmtMonths(TIMELINE_MAX)}</span>
+              </div>
+              {/* <div style={{ width: "100%", height: "1px", backgroundColor: "var(--gray-300)", marginTop: "4px" }} /> */}
             </div>
             <div style={{ gridColumn: "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
               Experience
@@ -598,7 +633,6 @@ export default function Portfolio() {
               <ProjectRow
                 key={project.slug}
                 project={project}
-                prevYear={PROJECTS[i - 1]?.year}
                 hovered={hovered}
                 setHovered={setHovered}
                 active={active}
@@ -606,6 +640,7 @@ export default function Portfolio() {
                 isMobile={isMobile}
                 revealed={revealed}
                 setHoveredCol={setHoveredCol}
+                isFirst={i === 0}
               />
             ))}
           </div>
