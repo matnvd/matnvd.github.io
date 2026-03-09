@@ -378,7 +378,7 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst, timeline }) {
+function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst, timeline, onHoverSound }) {
   const { title, year, month, slug, description, url, category, technologies } = experience;
   const barLeft = (toMonths(year, month) - timeline.TIMELINE_MIN) / timeline.TIMELINE_SPAN;
   const barWidth = timeline.effectiveDuration(experience) / timeline.TIMELINE_SPAN;
@@ -438,7 +438,12 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
             opacity: revealed ? 1 : 0,
             transition: "opacity 0.6s",
           }}
-          onMouseEnter={() => !isMobile && setHovered({ slug, year })}
+          onMouseEnter={() => {
+            if (!isMobile) {
+                setHovered({ slug, year });
+                onHoverSound();
+            }
+          }}
           onMouseLeave={() => setHovered(null)}
         >
           <a
@@ -512,6 +517,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
                   isHovered={isHovered}
                   hasActive={hasActive || anyHovered}
                   revealed={revealed}
+                  onMouseEnter={onHoverSound}
                   onClick={() =>
                     setActive((prev) =>
                       prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
@@ -559,7 +565,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
   );
 }
 
-function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, showComingSoon = true }) {
+function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, showComingSoon = true, onHoverSound }) {
   const { title, year, slug, description, url, category, technologies } = project;
   const showYear = prevYear !== year;
   const isHovered = hovered?.slug === slug;
@@ -605,7 +611,12 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
             opacity: revealed ? 1 : 0,
             transition: "opacity 0.6s",
           }}
-          onMouseEnter={() => !isMobile && setHovered({ slug, year })}
+          onMouseEnter={() => {
+            if (!isMobile) {
+                setHovered({ slug, year });
+                onHoverSound();
+            }
+          }}
           onMouseLeave={() => setHovered(null)}
         >
           <a
@@ -679,6 +690,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
                   isHovered={isHovered}
                   hasActive={hasActive || anyHovered}
                   revealed={revealed}
+                  onMouseEnter={onHoverSound}
                   onClick={() =>
                     setActive((prev) =>
                       prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
@@ -822,6 +834,11 @@ export default function Portfolio() {
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [tableIndex, setTableIndex] = useState(0);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(false);
+
+  const hoverSound = useRef(null);
+  const switchSound = useRef(null);
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
@@ -868,17 +885,41 @@ export default function Portfolio() {
     }
   }, []);
 
+  // Audio setup
+  useEffect(() => {
+    hoverSound.current = new Audio("https://res.cloudinary.com/dwrpq3bxp/video/upload/v1712244344/ES_Switch_Click_2_-_SFX_Producer_jwdojg.mp3");
+    switchSound.current = new Audio("https://res.cloudinary.com/dwrpq3bxp/video/upload/v1712241843/click-button-131479_kgipia.mp3");
+    hoverSound.current.volume = 0.4;
+    switchSound.current.volume = 0.5;
+  }, []);
+
+  const playHover = () => {
+    if (isSoundEnabled && hoverSound.current) {
+      hoverSound.current.currentTime = 0;
+      hoverSound.current.play().catch(() => {});
+    }
+  };
+
+  const playSwitch = () => {
+    if (isSoundEnabled && switchSound.current) {
+      switchSound.current.currentTime = 0;
+      switchSound.current.play().catch(() => {});
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') {
+        playSwitch();
         setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length);
       } else if (e.key === 'ArrowRight') {
+        playSwitch();
         setTableIndex((tableIndex + 1) % TABLE_NAMES.length);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [tableIndex, TABLE_NAMES]);
+  }, [tableIndex, TABLE_NAMES, isSoundEnabled]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -1028,6 +1069,7 @@ export default function Portfolio() {
                 gridColumn: "6 / 7",
                 display: isMobile ? "none" : "flex",
                 justifyContent: "flex-end",
+                gap: "8px"
               }}
             >
               <button
@@ -1045,6 +1087,23 @@ export default function Portfolio() {
                 onMouseLeave={e => e.currentTarget.style.color = "inherit"}
               >
                 {isDarkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+              <span style={{ opacity: 0.3 }}>|</span>
+              <button
+                onClick={() => setIsSoundEnabled(!isSoundEnabled)}
+                style={{
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  fontWeight: 700,
+                  color: isSoundEnabled ? "inherit" : "var(--gray-400)",
+                  transition: "color 0.15s",
+                  padding: "0",
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"}
+                onMouseLeave={e => e.currentTarget.style.color = isSoundEnabled ? "inherit" : "var(--gray-400)"}
+              >
+                Sound {isSoundEnabled ? "On" : "Off"}
               </button>
             </div>
           </div>
@@ -1066,16 +1125,28 @@ export default function Portfolio() {
           >
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <button
-                onClick={() => setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length)}
-                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+                onClick={() => {
+                    playSwitch();
+                    setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length);
+                }}
+                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s", background: "none", border: "none" }}
+                onMouseEnter={e => {
+                    e.currentTarget.style.color = "var(--foreground)";
+                    playHover();
+                }}
                 onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
               >&lt;</button>
               <span style={{ display: "inline-block", textAlign: "center", width: "10ch" }}>{ TABLE_NAMES[tableIndex] }</span>
               <button
-                onClick={() => setTableIndex((tableIndex + 1) % TABLE_NAMES.length)}
-                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+                onClick={() => {
+                    playSwitch();
+                    setTableIndex((tableIndex + 1) % TABLE_NAMES.length);
+                }}
+                style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s", background: "none", border: "none" }}
+                onMouseEnter={e => {
+                    e.currentTarget.style.color = "var(--foreground)";
+                    playHover();
+                }}
                 onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
               >&gt;</button>
             </div>
@@ -1160,6 +1231,7 @@ export default function Portfolio() {
                     setHoveredCol={setHoveredCol}
                     isFirst={i === 0}
                     timeline={timeline}
+                    onHoverSound={playHover}
                   />
                 ))
               : activeData.map((project, i) => (
@@ -1175,6 +1247,7 @@ export default function Portfolio() {
                     revealed={revealed}
                     setHoveredCol={setHoveredCol}
                     showComingSoon={tableIndex !== 2}
+                    onHoverSound={playHover}
                   />
                 ))
             }
