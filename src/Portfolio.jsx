@@ -975,7 +975,7 @@ export default function Portfolio() {
   };
 
   // in future, for experiences table add 3rd category "type"? for internships/research/co-curriculars? // update
-  const colHeaders = [{ label: "Foci", type: "category" }, { label: "Technologies", type: "technologies" }];
+  const colHeaders = [{ label: "Field", type: "category" }, { label: "Technologies", type: "technologies" }];
 
   return (
     <div
@@ -1202,7 +1202,7 @@ export default function Portfolio() {
                   <span>{fmtMonths(timeline.TIMELINE_MIN)}</span>
                   <span>{fmtMonths(timeline.TIMELINE_MAX)}</span>
                 </div>
-              ) : "Year"}
+              ) : tableIndex === 1 ? "Year" : "Semester"}
             </div>
             <div style={{ gridColumn: "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
               {tableIndex === 0 ? "Experience" : tableIndex === 1 ? "Project" : "Course"}
