@@ -1093,12 +1093,10 @@ export default function Portfolio() {
                 onClick={() => { 
                     const newState = !isSoundEnabled;
                     setIsSoundEnabled(newState);
-                    // play sound immediately if we are turning it on
+                    // only play sound when turning sound ON, not when turning OFF
                     if (newState && switchSound.current) {
                         switchSound.current.currentTime = 0;
                         switchSound.current.play().catch(() => {});
-                    } else {
-                        playSwitch();
                     }
                 }}
                 style={{
