@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 // ─── Data ───────────────────────────────────────────────────────────
-const EXPERIENCES = [
+const EXPERIENCES_DATA = [
   {
     title: "ASU Bermuda Institute of Ocean Sciences (BIOS)",
     slug: "asu-bios",
@@ -9,7 +9,7 @@ const EXPERIENCES = [
     month: 6,
     duration: 2,
     category: ["Dev", "Data"],
-    role: "Incoming Database Development Intern",
+    description: "Incoming Database Development Intern",
     technologies: ["Python", "PostgreSQL"], // update
     url: "https://bios.asu.edu/"
   },
@@ -20,7 +20,7 @@ const EXPERIENCES = [
     month: 9,
     duration: "present",
     category: ["Dev", "Design"],
-    role: "HoagieMeal PM & Full-Stack Developer",
+    description: "HoagieMeal PM & Full-Stack Developer",
     technologies: ["Django", "Next.js", "PostgreSQL", "Figma"],
     url: "https://hoagie.io/"
   },
@@ -31,7 +31,7 @@ const EXPERIENCES = [
     month: 1,
     duration: "present",
     category: ["Dev", "Data"],
-    role: "Data & Archives Lead",
+    description: "Data & Archives Lead",
     technologies: ["Django", "Railway", "SupaBase",],
     url: "https://not_yet_made/"  // update
   },
@@ -42,7 +42,7 @@ const EXPERIENCES = [
     month: 12,
     duration: "present",
     category: ["Research", "ML/AI", "Dev"],
-    role: "Undergraduate Computer Vision Researcher",
+    description: "Undergraduate Computer Vision Researcher",
     technologies: ["Python", "Blender", "Newton"],
     url: "https://pvl.cs.princeton.edu/"
   },
@@ -53,7 +53,7 @@ const EXPERIENCES = [
     month: 1,
     duration: "present",
     category: ["Quant", "Research"],
-    role: "Quantitative Research Associate, Real Estate Team",
+    description: "Quantitative Research Associate, Real Estate Team",
     technologies: ["GEE", "Python", "Jupyter/Colab"],
     url: "https://www.simainsights.com/" // update?
   },
@@ -64,7 +64,7 @@ const EXPERIENCES = [
     month: 9,
     duration: "present",
     category: ["Quant", "ML/AI"],
-    role: "Competitor",
+    description: "Competitor",
     technologies: ["Kaggle", "Jupyter/Colab"],
     url: "https://princeton-quant.com/"
   },
@@ -75,20 +75,87 @@ const EXPERIENCES = [
     month: 9,
     duration: "present",
     category: ["ML/AI", "Research"],
-    role: "NLP & CV & QFE Reading Group Member",
+    description: "NLP & CV & QFE Reading Group Member",
     technologies: ["arXiv"],
     url: "https://princetonacm.github.io/"
   }
 ].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
 
+// uses end date as month instead of start like experiences
+const PROJECTS_DATA = [
+  {
+    "title": "Project R.I.P. (Roleplay Inference Pipeline)",
+    "slug": "project-rip",
+    "year": "2026",
+    "month": 2,
+    "duration": 3,
+    "category": ["ML/AI", "RAG", "DB", "Scraping"],
+    "description": "Modular RAG pipeline for high-fidelity persona agent revival.",
+    "technologies": ["Python", "LangChain", "Pinecone", "Gradio"],
+    "url": "https://github.com/matnvd/roleplay-inference-pipeline"
+  },
+  {
+    "title": "Swappa Listing Alerts",
+    "slug": "swappa-listing-alerts",
+    "year": "2024",
+    "month": 7,
+    "duration": 2,
+    "category": ["Cloud Automation"],
+    "description": "Automated GCP pipeline for real-time marketplace listing notifications.",
+    "technologies": ["GCP", "REST APIs", "Regex"],
+    "url": "https://www.macrodroidforum.com/index.php?threads/swappa-alerts.7631/"
+  },
+  {
+    "title": "InfoBand",
+    "slug": "infoband",
+    "year": "2025",
+    "month": 6,
+    "duration": 16,
+    "category": ["Mobile App", "Production"],
+    "description": "NFC-enabled mobile app for 3D-printed medical ID bracelets.",
+    "technologies": ["Dart", "Flutter", "NFC", "Git", "CAD"],
+    "url": "https://github.com/matnvd/infoband"
+  },
+  {
+    "title": "RHS Student App",
+    "slug": "rhs-student-app",
+    "year": "2025",
+    "month": 6,
+    "duration": 24,
+    "category": ["Mobile App", "Production"],
+    "description": "Official high school app serving over 1,000 students.",
+    "technologies": ["Dart", "Flutter", "Firebase", "Git"],
+    "url": "https://apps.apple.com/us/app/rhs-student-app/id6466660622"
+  },
+  {
+    "title": "Row City",
+    "slug": "row-city",
+    "year": "2024",
+    "month": 6,
+    "duration": 3,
+    "category": ["Mobile App", "Scraping"],
+    "description": "Scraping-based mobile app for live regatta results aggregation.",
+    "technologies": ["Dart", "Flutter", "Git"],
+    "url": "https://github.com/matnvd/Row-City"
+  }
+].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
+
+const COURSEWORK_DATA = [];
+
 const toMonths = (year, month) => parseInt(year) * 12 + month;
 const NOW_MONTHS = toMonths(new Date().getFullYear(), new Date().getMonth() + 1);
-const NUMERIC_MAX = Math.max(...EXPERIENCES.filter(p => typeof p.duration === "number").map(p => toMonths(p.year, p.month) + p.duration));
-const PRESENT_MAX = Math.max(NUMERIC_MAX, NOW_MONTHS);
-const effectiveDuration = (p) => p.duration === "present" ? PRESENT_MAX - toMonths(p.year, p.month) : p.duration;
-const TIMELINE_MIN = Math.min(...EXPERIENCES.map(p => toMonths(p.year, p.month)));
-const TIMELINE_MAX = Math.max(...EXPERIENCES.map(p => toMonths(p.year, p.month) + effectiveDuration(p)));
-const TIMELINE_SPAN = TIMELINE_MAX - TIMELINE_MIN;
+
+function computeTimeline(data) {
+  const numericEntries = data.filter(p => typeof p.duration === "number");
+  const numericMax = numericEntries.length
+    ? Math.max(...numericEntries.map(p => toMonths(p.year, p.month) + p.duration))
+    : NOW_MONTHS;
+  const presentMax = Math.max(numericMax, NOW_MONTHS);
+  const effDur = (p) => p.duration === "present" ? presentMax - toMonths(p.year, p.month) : p.duration;
+  const min = Math.min(...data.map(p => toMonths(p.year, p.month)));
+  const max = Math.max(...data.map(p => toMonths(p.year, p.month) + effDur(p)));
+  return { effectiveDuration: effDur, TIMELINE_MIN: min, TIMELINE_MAX: max, TIMELINE_SPAN: max - min };
+}
 
 const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const fmtMonths = (m) => `${MONTH_ABBR[(m - 1) % 12]} ${Math.floor((m - 1) / 12)}`;
@@ -135,6 +202,8 @@ const ACCENT_COLORS = [
 ];
 
 const accentFontFamily = '"Marist", Georgia, "Times New Roman", serif';
+const GRID_EXPERIENCES = "repeat(5, 1fr)";
+const GRID_PROJECTS = "0.4fr 1fr 1fr 1fr 2fr";
 
 // ─── Components ─────────────────────────────────────────────────────
 
@@ -177,10 +246,10 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst }) {
-  const { title, year, month, slug, role, url, category, technologies } = experience;
-  const barLeft = (toMonths(year, month) - TIMELINE_MIN) / TIMELINE_SPAN;
-  const barWidth = effectiveDuration(experience) / TIMELINE_SPAN;
+function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst, timeline }) {
+  const { title, year, month, slug, description, url, category, technologies } = experience;
+  const barLeft = (toMonths(year, month) - timeline.TIMELINE_MIN) / timeline.TIMELINE_SPAN;
+  const barWidth = timeline.effectiveDuration(experience) / timeline.TIMELINE_SPAN;
   const isHovered = hovered?.slug === slug;
   const anyHovered = !!hovered;
   const hasActive = !!(active?.category || active?.technologies);
@@ -196,7 +265,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
+          gridTemplateColumns: GRID_EXPERIENCES,
           gap: "8px",
           fontSize: "inherit",
         }}
@@ -277,7 +346,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
                 transition: "color 0.15s",
               }}
             >
-              {role}
+              {description}
             </p>
           </a>
         </div>
@@ -358,10 +427,177 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
   );
 }
 
+function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol }) {
+  const { title, year, slug, description, url, category, technologies } = project;
+  const showYear = prevYear !== year;
+  const isHovered = hovered?.slug === slug;
+  const anyHovered = !!hovered;
+  const hasActive = !!(active?.category || active?.technologies);
+  const dimmed = anyHovered && !isHovered;
+
+  const metaGroups = [
+    { type: "category", items: category },
+    { type: "technologies", items: technologies },
+  ];
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: GRID_PROJECTS,
+          gap: "8px",
+          fontSize: "inherit",
+        }}
+      >
+        {/* Year */}
+        <div
+          style={{
+            fontWeight: 700,
+            paddingTop: "8px",
+            borderTop: showYear ? "1px solid var(--gray-300)" : "none",
+            opacity: revealed ? 1 : 0,
+            transition: "color 0.15s, opacity 0.6s",
+            color: dimmed ? "var(--gray-500)" : "inherit",
+          }}
+        >
+          {showYear ? year : ""}
+        </div>
+
+        {/* Title */}
+        <div
+          style={{
+            gridColumn: "2 / span 2",
+            padding: "8px 0",
+            borderTop: "1px solid var(--gray-300)",
+            opacity: revealed ? 1 : 0,
+            transition: "opacity 0.6s",
+          }}
+          onMouseEnter={() => !isMobile && setHovered({ slug, year })}
+          onMouseLeave={() => setHovered(null)}
+        >
+          <a
+            href={url || "#"}
+            target={url ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            title={url ? "View project" : "Coming soon"}
+            style={{
+              display: "block",
+              paddingRight: "10%",
+              transition: "color 0.15s",
+              color: dimmed ? "var(--gray-500)" : "inherit",
+              cursor: url ? "pointer" : "default",
+            }}
+          >
+            <h2 style={{ display: "inline", fontWeight: 700 }}>
+              {title}
+              {!isMobile && (
+                <span
+                  style={{
+                    display: "inline-block",
+                    marginLeft: "4px",
+                    opacity: isHovered ? 1 : 0,
+                    transition: "opacity 0.15s",
+                  }}
+                >
+                  {url ? "↗" : "🔜"}
+                </span>
+              )}
+            </h2>
+            <p
+              style={{
+                marginTop: "2px",
+                color: dimmed ? "var(--gray-400)" : "var(--gray-500)",
+                fontFamily: accentFontFamily,
+                fontSize: "0.9rem",
+                transition: "color 0.15s",
+              }}
+            >
+              {description}
+            </p>
+          </a>
+        </div>
+
+        {/* Meta columns (hidden on mobile) */}
+        <div
+          style={{
+            gridColumn: "span 2",
+            display: isMobile ? "none" : "grid",
+            gridTemplateColumns: "1fr 2fr",
+          }}
+          onMouseEnter={() => !isMobile && setHovered({ slug, year })}
+          onMouseLeave={() => setHovered(null)}
+        >
+          {metaGroups.map(({ type, items }) => (
+            <div
+              key={`${slug}-${type}`}
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${items.length}, 1fr)`,
+              }}
+              onMouseEnter={() => setHoveredCol(type)}
+              onMouseLeave={() => setHoveredCol(null)}
+            >
+              {items.map((val) => (
+                <MetaButton
+                  key={`${slug}-${type}-${val}`}
+                  type={type}
+                  value={val}
+                  isActive={active?.[type] === val}
+                  isHovered={isHovered}
+                  hasActive={hasActive || anyHovered}
+                  revealed={revealed}
+                  onClick={() =>
+                    setActive((prev) =>
+                      prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                    )
+                  }
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile meta */}
+        {isMobile && (
+          <div
+            style={{
+              gridColumn: "span 2",
+              display: "grid",
+              gridTemplateColumns: "1fr 2fr",
+            }}
+          >
+            {metaGroups.map(({ type, items }) => (
+              <div key={`${slug}-${type}-m`} style={{ display: "flex", flexDirection: "column" }}>
+                {items.map((val) => (
+                  <MetaButton
+                    key={`${slug}-${type}-${val}-m`}
+                    type={type}
+                    value={val}
+                    isActive={active?.[type] === val}
+                    isHovered={false}
+                    hasActive={hasActive}
+                    revealed={revealed}
+                    onClick={() =>
+                      setActive((prev) =>
+                        prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function MobileKey({ active, setActive, visible }) {
   const [expanded, setExpanded] = useState(false);
-  const allCategories = [...new Set(EXPERIENCES.flatMap((p) => p.category))].sort();
-  const allTech = [...new Set(EXPERIENCES.flatMap((p) => p.technologies))].sort();
+  const allCategories = [...new Set(EXPERIENCES_DATA.flatMap((p) => p.category))].sort();
+  const allTech = [...new Set(EXPERIENCES_DATA.flatMap((p) => p.technologies))].sort();
   const hasActive = !!(active?.category || active?.technologies);
 
   const groups = [
@@ -455,6 +691,9 @@ export default function Portfolio() {
   const [isMobile, setIsMobile] = useState(false);
   const [tableIndex, setTableIndex] = useState(0);
   const TABLE_NAMES = ["Experiences", "Projects", "Coursework"];
+  const TABLE_DATA = [EXPERIENCES_DATA, PROJECTS_DATA, COURSEWORK_DATA];
+  const activeData = TABLE_DATA[tableIndex] ?? EXPERIENCES_DATA;
+  const timeline = computeTimeline(activeData.length ? activeData : EXPERIENCES_DATA);
   const navRef = useRef(null);
   const currentYear = new Date().getFullYear();
 
@@ -501,7 +740,7 @@ export default function Portfolio() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  // in future, add 3rd category "type"? for internships/research/co-curriculars? // update
+  // in future, for experiences table add 3rd category "type"? for internships/research/co-curriculars? // update
   const colHeaders = [{ label: "Foci", type: "category" }, { label: "Technologies", type: "technologies" }];
 
   return (
@@ -609,7 +848,7 @@ export default function Portfolio() {
               position: "sticky",
               top: "var(--nav-height)",
               display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
+              gridTemplateColumns: tableIndex === 1 ? GRID_PROJECTS : GRID_EXPERIENCES,
               gap: "8px",
               paddingTop: "28px",
               paddingBottom: "4px",
@@ -621,14 +860,15 @@ export default function Portfolio() {
             }}
           >
             <div style={{ gridColumn: "span 1", paddingTop: "4px", borderTop: "1px solid var(--gray-300)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span>{fmtMonths(TIMELINE_MIN)}</span>
-                <span>{fmtMonths(TIMELINE_MAX)}</span>
-              </div>
-              {/* <div style={{ width: "100%", height: "1px", backgroundColor: "var(--gray-300)", marginTop: "4px" }} /> */}
+              {tableIndex === 0 ? (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>{fmtMonths(timeline.TIMELINE_MIN)}</span>
+                  <span>{fmtMonths(timeline.TIMELINE_MAX)}</span>
+                </div>
+              ) : "Year"}
             </div>
             <div style={{ gridColumn: "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
-              Experience
+              {tableIndex === 0 ? "Experience" : tableIndex === 1 ? "Project" : "Course"}
             </div>
             {!isMobile ? (
               colHeaders.map(({ label, type }) => (
@@ -646,22 +886,39 @@ export default function Portfolio() {
             )}
           </div>
 
-          {/* Experiences */}
+          {/* Rows */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {EXPERIENCES.map((experience, i) => (
-              <ExperienceRow
-                key={experience.slug}
-                experience={experience}
-                hovered={hovered}
-                setHovered={setHovered}
-                active={active}
-                setActive={setActive}
-                isMobile={isMobile}
-                revealed={revealed}
-                setHoveredCol={setHoveredCol}
-                isFirst={i === 0}
-              />
-            ))}
+            {tableIndex === 0
+              ? activeData.map((experience, i) => (
+                  <ExperienceRow
+                    key={experience.slug}
+                    experience={experience}
+                    hovered={hovered}
+                    setHovered={setHovered}
+                    active={active}
+                    setActive={setActive}
+                    isMobile={isMobile}
+                    revealed={revealed}
+                    setHoveredCol={setHoveredCol}
+                    isFirst={i === 0}
+                    timeline={timeline}
+                  />
+                ))
+              : activeData.map((project, i) => (
+                  <ProjectRow
+                    key={project.slug}
+                    project={project}
+                    prevYear={activeData[i - 1]?.year}
+                    hovered={hovered}
+                    setHovered={setHovered}
+                    active={active}
+                    setActive={setActive}
+                    isMobile={isMobile}
+                    revealed={revealed}
+                    setHoveredCol={setHoveredCol}
+                  />
+                ))
+            }
           </div>
         </section>
       </main>
