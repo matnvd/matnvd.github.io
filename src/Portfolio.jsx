@@ -149,7 +149,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Computer Science"],
     "description": "COS324",
-    "technologies": [],
+    "technologies": ["Python", "Jupyter", "LaTeX"],
     "url": ""
   },
   {
@@ -160,7 +160,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Computer Science"],
     "description": "COS226",
-    "technologies": [],
+    "technologies": ["Java"],
     "url": ""
   },
   {
@@ -169,9 +169,9 @@ const COURSEWORK_DATA = [
     "year": "Fall 2025",
     "month": 9,
     "duration": 4,
-    "category": ["Operations Research and Financial Engineering"],
+    "category": ["Operations Research & Financial Engineering"],
     "description": "ORF245",
-    "technologies": [],
+    "technologies": ["R"],
     "url": ""
   },
   {
@@ -182,7 +182,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Mathematics"],
     "description": "MAT202",
-    "technologies": [],
+    "technologies": ["LaTeX"],
     "url": ""
   },
   {
@@ -193,7 +193,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Mathematics"],
     "description": "MAT201",
-    "technologies": [],
+    "technologies": ["LaTeX"],
     "url": ""
   },
   {
@@ -204,7 +204,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Physics"],
     "description": "EGR153",
-    "technologies": [],
+    "technologies": ["MATLAB"],
     "url": ""
   },
   {
@@ -215,18 +215,18 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Physics"],
     "description": "EGR151",
-    "technologies": [],
+    "technologies": ["MATLAB", "SolidWorks", "LaTeX"],
     "url": ""
   },
   {
-    "title": "Priceless (Research Seminar on Measuring Value)",
+    "title": "Priceless (Measuring Value)",
     "slug": "wri143",
     "year": "Spring 2026",
     "month": 1,
     "duration": 4,
-    "category": ["Seminars"],
+    "category": ["Seminar"],
     "description": "WRI143",
-    "technologies": [],
+    "technologies": ["Research"],
     "url": ""
   },
   {
@@ -235,9 +235,9 @@ const COURSEWORK_DATA = [
     "year": "Spring 2026",
     "month": 1,
     "duration": 4,
-    "category": ["Seminars"],
+    "category": ["Seminar"],
     "description": "FRS102",
-    "technologies": [],
+    "technologies": ["Research"],
     "url": ""
   }
 ].sort((a, b) => {
@@ -542,7 +542,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
   );
 }
 
-function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol }) {
+function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, showComingSoon = true }) {
   const { title, year, slug, description, url, category, technologies } = project;
   const showYear = prevYear !== year;
   const isHovered = hovered?.slug === slug;
@@ -615,7 +615,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
                     transition: "opacity 0.15s",
                   }}
                 >
-                  {url ? "↗" : "🔜"}
+                  {url ? "↗" : showComingSoon ? "🔜" : ""}
                 </span>
               )}
             </h2>
@@ -1036,6 +1036,7 @@ export default function Portfolio() {
                     isMobile={isMobile}
                     revealed={revealed}
                     setHoveredCol={setHoveredCol}
+                    showComingSoon={tableIndex !== 2}
                   />
                 ))
             }
