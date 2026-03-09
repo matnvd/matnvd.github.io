@@ -378,7 +378,7 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst, timeline, onHoverSound }) {
+function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst, timeline, onHoverSound, onClickSound }) {
   const { title, year, month, slug, description, url, category, technologies } = experience;
   const barLeft = (toMonths(year, month) - timeline.TIMELINE_MIN) / timeline.TIMELINE_SPAN;
   const barWidth = timeline.effectiveDuration(experience) / timeline.TIMELINE_SPAN;
@@ -440,14 +440,15 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
           }}
           onMouseEnter={() => {
             if (!isMobile) {
-                setHovered({ slug, year });
-                onHoverSound();
+              setHovered({ slug, year });
+              onHoverSound();
             }
           }}
           onMouseLeave={() => setHovered(null)}
         >
           <a
             href={url || "#"}
+            onClick={onClickSound}
             target={url ? "_blank" : undefined}
             rel="noopener noreferrer"
             title={url ? "View experience" : "Coming soon"}
@@ -518,11 +519,12 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
                   hasActive={hasActive || anyHovered}
                   revealed={revealed}
                   onMouseEnter={onHoverSound}
-                  onClick={() =>
+                  onClick={() => {
+                    onClickSound();
                     setActive((prev) =>
                       prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                    )
-                  }
+                    );
+                  }}
                 />
               ))}
             </div>
@@ -549,11 +551,12 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
                     isHovered={false}
                     hasActive={hasActive}
                     revealed={revealed}
-                    onClick={() =>
-                      setActive((prev) =>
-                        prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                      )
-                    }
+                    onClick={() => {
+                        onClickSound();
+                        setActive((prev) =>
+                          prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                        );
+                    }}
                   />
                 ))}
               </div>
@@ -565,7 +568,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
   );
 }
 
-function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, showComingSoon = true, onHoverSound }) {
+function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, showComingSoon = true, onHoverSound, onClickSound }) {
   const { title, year, slug, description, url, category, technologies } = project;
   const showYear = prevYear !== year;
   const isHovered = hovered?.slug === slug;
@@ -613,14 +616,15 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
           }}
           onMouseEnter={() => {
             if (!isMobile) {
-                setHovered({ slug, year });
-                onHoverSound();
+              setHovered({ slug, year });
+              onHoverSound();
             }
           }}
           onMouseLeave={() => setHovered(null)}
         >
           <a
             href={url || "#"}
+            onClick={onClickSound}
             target={url ? "_blank" : undefined}
             rel="noopener noreferrer"
             title={url ? "View project" : "Coming soon"}
@@ -691,11 +695,12 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
                   hasActive={hasActive || anyHovered}
                   revealed={revealed}
                   onMouseEnter={onHoverSound}
-                  onClick={() =>
+                  onClick={() => {
+                    onClickSound();
                     setActive((prev) =>
                       prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                    )
-                  }
+                    );
+                  }}
                 />
               ))}
             </div>
@@ -722,11 +727,12 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
                     isHovered={false}
                     hasActive={hasActive}
                     revealed={revealed}
-                    onClick={() =>
-                      setActive((prev) =>
-                        prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                      )
-                    }
+                    onClick={() => {
+                        onClickSound();
+                        setActive((prev) =>
+                          prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                        );
+                    }}
                   />
                 ))}
               </div>
@@ -944,13 +950,6 @@ export default function Portfolio() {
     return () => clearTimeout(timer);
   }, []);
 
-  // useEffect(() => {
-  //   document.body.style.overflowY = 'scroll';
-  //   return () => {
-  //     document.body.style.overflowY = '';
-  //   };
-  // }, []);
-
   // for now hide scrollbar. once get more experiences/projects, // update so that u use code block above
   useEffect(() => {
     const style = document.createElement('style');
@@ -969,6 +968,7 @@ export default function Portfolio() {
   }, []);
 
   const copyEmail = () => {
+    playSwitch();
     navigator.clipboard?.writeText("mathiasnvd07@gmail.com");
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
@@ -1018,7 +1018,7 @@ export default function Portfolio() {
               </a>
               <div>
                 <h1 style={{ display: "inline", fontWeight: 700 }}>
-                  <a href="/">Mathias Nguyen-Van-Duong</a>
+                  <a href="/" onClick={playSwitch}>Mathias Nguyen-Van-Duong</a>
                 </h1>
                 <span>,</span>
                 <p>Computer Science B.S.E. Student, Princeton</p>
@@ -1035,15 +1035,15 @@ export default function Portfolio() {
               textAlign: "center",
             }}
           >
-            <span onClick={copyEmail} style={{ cursor: "pointer" }}>
+            <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
               {copied ? "Copied" : "Email"}
             </span>
             <span>, </span>
-            <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer">
+            <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
               LinkedIn
             </a>
             <span>, </span>
-            <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
               GitHub
             </a>
           </div>
@@ -1058,9 +1058,9 @@ export default function Portfolio() {
             }}
           >
             <span>Updated {__BUILD_DATE__}</span>
-            <span>Design from <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"} onMouseLeave={e => e.currentTarget.style.color = "inherit"}>
+            <span>Design inspired by <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => {e.currentTarget.style.color = "var(--gray-400)"; playHover();}} onMouseLeave={e => e.currentTarget.style.color = "inherit"} onClick={playSwitch}>
               Nicole Ho
-            </a>'s site</span>
+            </a></span>
 
             <div
               style={{
@@ -1073,7 +1073,7 @@ export default function Portfolio() {
               }}
             >
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
+                onClick={() => { playSwitch(); setIsDarkMode(!isDarkMode); }}
                 style={{
                   cursor: "pointer",
                   background: "none",
@@ -1083,27 +1083,37 @@ export default function Portfolio() {
                   transition: "color 0.15s",
                   padding: "0",
                 }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"}
+                onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }}
                 onMouseLeave={e => e.currentTarget.style.color = "inherit"}
               >
                 {isDarkMode ? "Light Mode" : "Dark Mode"}
               </button>
               <span style={{ opacity: 0.3 }}>|</span>
               <button
-                onClick={() => setIsSoundEnabled(!isSoundEnabled)}
+                onClick={() => { 
+                    const newState = !isSoundEnabled;
+                    setIsSoundEnabled(newState);
+                    // play sound immediately if we are turning it on
+                    if (newState && switchSound.current) {
+                        switchSound.current.currentTime = 0;
+                        switchSound.current.play().catch(() => {});
+                    } else {
+                        playSwitch();
+                    }
+                }}
                 style={{
                   cursor: "pointer",
                   background: "none",
                   border: "none",
                   fontWeight: 700,
-                  color: isSoundEnabled ? "inherit" : "var(--gray-400)",
+                  color: "inherit",
                   transition: "color 0.15s",
                   padding: "0",
                 }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"}
-                onMouseLeave={e => e.currentTarget.style.color = isSoundEnabled ? "inherit" : "var(--gray-400)"}
+                onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }}
+                onMouseLeave={e => e.currentTarget.style.color = "inherit"}
               >
-                Sound {isSoundEnabled ? "On" : "Off"}
+                Sound {isSoundEnabled ? "Off" : "On"}
               </button>
             </div>
           </div>
@@ -1232,6 +1242,7 @@ export default function Portfolio() {
                     isFirst={i === 0}
                     timeline={timeline}
                     onHoverSound={playHover}
+                    onClickSound={playSwitch}
                   />
                 ))
               : activeData.map((project, i) => (
@@ -1248,6 +1259,7 @@ export default function Portfolio() {
                     setHoveredCol={setHoveredCol}
                     showComingSoon={tableIndex !== 2}
                     onHoverSound={playHover}
+                    onClickSound={playSwitch}
                   />
                 ))
             }
