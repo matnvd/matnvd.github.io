@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 // ─── Data ───────────────────────────────────────────────────────────
-const PROJECTS = [
+const EXPERIENCES = [
   {
     title: "ASU Bermuda Institute of Ocean Sciences (BIOS)",
     slug: "asu-bios",
     year: "2026",
-    month: 7,
+    month: 6,
     duration: 2,
     category: ["Dev", "Data"],
     role: "Incoming Database Development Intern",
@@ -82,10 +82,12 @@ const PROJECTS = [
 ].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
 
 const toMonths = (year, month) => parseInt(year) * 12 + month;
-const NUMERIC_MAX = Math.max(...PROJECTS.filter(p => typeof p.duration === "number").map(p => toMonths(p.year, p.month) + p.duration));
-const effectiveDuration = (p) => p.duration === "present" ? NUMERIC_MAX - toMonths(p.year, p.month) : p.duration;
-const TIMELINE_MIN = Math.min(...PROJECTS.map(p => toMonths(p.year, p.month)));
-const TIMELINE_MAX = Math.max(...PROJECTS.map(p => toMonths(p.year, p.month) + effectiveDuration(p)));
+const NOW_MONTHS = toMonths(new Date().getFullYear(), new Date().getMonth() + 1);
+const NUMERIC_MAX = Math.max(...EXPERIENCES.filter(p => typeof p.duration === "number").map(p => toMonths(p.year, p.month) + p.duration));
+const PRESENT_MAX = Math.max(NUMERIC_MAX, NOW_MONTHS);
+const effectiveDuration = (p) => p.duration === "present" ? PRESENT_MAX - toMonths(p.year, p.month) : p.duration;
+const TIMELINE_MIN = Math.min(...EXPERIENCES.map(p => toMonths(p.year, p.month)));
+const TIMELINE_MAX = Math.max(...EXPERIENCES.map(p => toMonths(p.year, p.month) + effectiveDuration(p)));
 const TIMELINE_SPAN = TIMELINE_MAX - TIMELINE_MIN;
 
 const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -175,10 +177,10 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ProjectRow({ project, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst }) {
-  const { title, year, month, slug, role, url, category, technologies } = project;
+function ExperienceRow({ experience, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol, isFirst }) {
+  const { title, year, month, slug, role, url, category, technologies } = experience;
   const barLeft = (toMonths(year, month) - TIMELINE_MIN) / TIMELINE_SPAN;
-  const barWidth = effectiveDuration(project) / TIMELINE_SPAN;
+  const barWidth = effectiveDuration(experience) / TIMELINE_SPAN;
   const isHovered = hovered?.slug === slug;
   const anyHovered = !!hovered;
   const hasActive = !!(active?.category || active?.technologies);
@@ -242,7 +244,7 @@ function ProjectRow({ project, hovered, setHovered, active, setActive, isMobile,
             href={url || "#"}
             target={url ? "_blank" : undefined}
             rel="noopener noreferrer"
-            title={url ? "View project" : "Coming soon"}
+            title={url ? "View experience" : "Coming soon"}
             style={{
               display: "block",
               paddingRight: "10%",
@@ -358,8 +360,8 @@ function ProjectRow({ project, hovered, setHovered, active, setActive, isMobile,
 
 function MobileKey({ active, setActive, visible }) {
   const [expanded, setExpanded] = useState(false);
-  const allCategories = [...new Set(PROJECTS.flatMap((p) => p.category))].sort();
-  const allTech = [...new Set(PROJECTS.flatMap((p) => p.technologies))].sort();
+  const allCategories = [...new Set(EXPERIENCES.flatMap((p) => p.category))].sort();
+  const allTech = [...new Set(EXPERIENCES.flatMap((p) => p.technologies))].sort();
   const hasActive = !!(active?.category || active?.technologies);
 
   const groups = [
@@ -451,6 +453,8 @@ export default function Portfolio() {
   const [hoveredCol, setHoveredCol] = useState(null);
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [tableIndex, setTableIndex] = useState(0);
+  const TABLE_NAMES = ["Experiences", "Projects", "Coursework"];
   const navRef = useRef(null);
   const currentYear = new Date().getFullYear();
 
@@ -497,7 +501,7 @@ export default function Portfolio() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  // in future, add 3rd category "type"? for internships/research/co-curriculars?
+  // in future, add 3rd category "type"? for internships/research/co-curriculars? // update
   const colHeaders = [{ label: "Foci", type: "category" }, { label: "Technologies", type: "technologies" }];
 
   return (
@@ -544,7 +548,7 @@ export default function Portfolio() {
                 </h1>
                 <span>,</span>
                 <p>Computer Science B.S.E. Student, Princeton</p>
-                <p>Experiences, Projects, and Coursework 2025–{currentYear}</p>
+                <p>Experiences, Projects, and Coursework: 2025–{currentYear}</p>
               </div>
             </div>
           </div>
@@ -583,6 +587,21 @@ export default function Portfolio() {
 
       {/* ─── Main Content ─── */}
       <main style={{ paddingTop: isMobile ? "40px" : "160px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "32px", fontFamily: accentFontFamily, fontSize: "1.5rem", fontWeight: 700 }}>
+          <button
+            onClick={() => setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length)}
+            style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+            onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
+          >&lt;</button>
+          <span style={{ display: "inline-block", textAlign: "center", width: "10ch" }}>{ TABLE_NAMES[tableIndex] }</span>
+          <button
+            onClick={() => setTableIndex((tableIndex + 1) % TABLE_NAMES.length)}
+            style={{ cursor: "pointer", fontSize: "inherit", fontWeight: "inherit", color: "var(--gray-400)", transition: "color 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.color = "var(--foreground)"}
+            onMouseLeave={e => e.currentTarget.style.color = "var(--gray-400)"}
+          >&gt;</button>
+        </div>
         <section style={{ width: "100%", paddingBottom: isMobile ? "16px" : "8px" }}>
           {/* Column Headers */}
           <div
@@ -627,12 +646,12 @@ export default function Portfolio() {
             )}
           </div>
 
-          {/* Projects */}
+          {/* Experiences */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {PROJECTS.map((project, i) => (
-              <ProjectRow
-                key={project.slug}
-                project={project}
+            {EXPERIENCES.map((experience, i) => (
+              <ExperienceRow
+                key={experience.slug}
+                experience={experience}
                 hovered={hovered}
                 setHovered={setHovered}
                 active={active}
