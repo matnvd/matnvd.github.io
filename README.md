@@ -1,2 +1,2 @@
-# mathiasnvd.com
-personal website written using react, based on nicoleho.net's website
+# [mathiasnvd.com](https://mathiasnvd.com)
+personal website written using react, based on nicoleho.net's website. Implemented enhanced UI accessibility features, structured project tables, and dynamic table switching.

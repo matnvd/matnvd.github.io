@@ -81,18 +81,29 @@ const EXPERIENCES_DATA = [
   }
 ].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
 
-// uses end date as month instead of start like experiences
+// uses end date as month instead of start like experiences, adjusted some to re-order by priority
 const PROJECTS_DATA = [
   {
     "title": "Project R.I.P. (Roleplay Inference Pipeline)",
     "slug": "project-rip",
     "year": "2026",
-    "month": 2,
-    "duration": 3,
+    "month": 3,
+    "duration": 4,
     "category": ["ML/AI", "RAG", "Data", "Scraping"],
     "description": "Modular RAG pipeline for high-fidelity persona agent revival using Gradio.",
     "technologies": ["Python", "LangChain", "Pinecone", /*"Gradio"*/],
     "url": "https://github.com/matnvd/roleplay-inference-pipeline"
+  },
+  {
+    "title": "Personal Website",
+    "slug": "personal-website",
+    "year": "2026",
+    "month": 3,
+    "duration": 1,
+    "category": ["Web Development"],
+    "description": "Designer-inspired archive featuring enhanced accessibility and structured project tables.",
+    "technologies": ["ReactJS", "HTML/CSS"],
+    "url": "https://github.com/matnvd/matnvd.github.io"
   },
   {
     "title": "Swappa Listing Alerts",
@@ -293,14 +304,17 @@ const COLOR_MAP = {
   "category-scraping": "tan",
   "category-production": "#ffe4e1", // same as jupyter/colab
   "category-rag": "#eeb7ee", // same as research
+  "category-web-development": "#b0e0e6", // same as django
 
+  "technologies-html/css": "#f3ecda",
   "technologies-pinecone": "#1ee477",
   "technologies-nfc": "#ebdac5", // same as supabase
   "technologies-regex": "#ffdab9",
   "technologies-cad": "#fafad2",
   "technologies-langchain": "#d8bfd8",
   "technologies-rest-apis": "khaki",
-  "technologies-dart/flutter": "#add8e6",
+  "technologies-dart/flutter": "#5eb1cd",
+  "technologies-reactjs": "#729aff",
   "technologies-gcp": "plum", // same as figma
   "technologies-firebase": "#deb887", // same as nextjs
   "technologies-gradio": "#f3add0", //same as newton
