@@ -869,6 +869,18 @@ export default function Portfolio() {
   }, []);
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        setTableIndex((tableIndex - 1 + TABLE_NAMES.length) % TABLE_NAMES.length);
+      } else if (e.key === 'ArrowRight') {
+        setTableIndex((tableIndex + 1) % TABLE_NAMES.length);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [tableIndex, TABLE_NAMES]);
+
+  useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener("resize", check);
