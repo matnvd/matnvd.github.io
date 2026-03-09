@@ -89,9 +89,9 @@ const PROJECTS_DATA = [
     "year": "2026",
     "month": 2,
     "duration": 3,
-    "category": ["ML/AI", "RAG", "DB", "Scraping"],
-    "description": "Modular RAG pipeline for high-fidelity persona agent revival.",
-    "technologies": ["Python", "LangChain", "Pinecone", "Gradio"],
+    "category": ["ML/AI", "RAG", "Data", "Scraping"],
+    "description": "Modular RAG pipeline for high-fidelity persona agent revival using Gradio.",
+    "technologies": ["Python", "LangChain", "Pinecone", /*"Gradio"*/],
     "url": "https://github.com/matnvd/roleplay-inference-pipeline"
   },
   {
@@ -112,8 +112,8 @@ const PROJECTS_DATA = [
     "month": 6,
     "duration": 16,
     "category": ["Mobile App", "Production"],
-    "description": "NFC-enabled mobile app for 3D-printed medical ID bracelets.",
-    "technologies": ["Dart", "Flutter", "NFC", "Git", "CAD"],
+    "description": "NFC-enabled mobile app for 3D-printed digitalized medical ID bracelets.",
+    "technologies": ["Dart/Flutter", "NFC", "Git", "CAD"],
     "url": "https://github.com/matnvd/infoband"
   },
   {
@@ -124,7 +124,7 @@ const PROJECTS_DATA = [
     "duration": 24,
     "category": ["Mobile App", "Production"],
     "description": "Official high school app serving over 1,000 students.",
-    "technologies": ["Dart", "Flutter", "Firebase", "Git"],
+    "technologies": ["Git", "Dart/Flutter", "Firebase", ],
     "url": "https://apps.apple.com/us/app/rhs-student-app/id6466660622"
   },
   {
@@ -135,12 +135,116 @@ const PROJECTS_DATA = [
     "duration": 3,
     "category": ["Mobile App", "Scraping"],
     "description": "Scraping-based mobile app for live regatta results aggregation.",
-    "technologies": ["Dart", "Flutter", "Git"],
+    "technologies": ["Dart/Flutter", "Git"],
     "url": "https://github.com/matnvd/Row-City"
   }
 ].sort((a, b) => b.month - a.month).sort((a, b) => b.year - a.year);
 
-const COURSEWORK_DATA = [];
+const COURSEWORK_DATA = [
+  {
+    "title": "Introduction to Machine Learning",
+    "slug": "cos324",
+    "year": "Spring 2026",
+    "month": 1,
+    "duration": 4,
+    "category": ["Computer Science"],
+    "description": "COS324",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Algorithms and Data Structures",
+    "slug": "cos226",
+    "year": "Fall 2025",
+    "month": 9,
+    "duration": 4,
+    "category": ["Computer Science"],
+    "description": "COS226",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Fundamentals of Statistics",
+    "slug": "orf245",
+    "year": "Fall 2025",
+    "month": 9,
+    "duration": 4,
+    "category": ["Operations Research and Financial Engineering"],
+    "description": "ORF245",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Linear Algebra with Applications",
+    "slug": "mat202",
+    "year": "Spring 2026",
+    "month": 1,
+    "duration": 4,
+    "category": ["Mathematics"],
+    "description": "MAT202",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Multivariable Calculus",
+    "slug": "mat201",
+    "year": "Fall 2025",
+    "month": 9,
+    "duration": 4,
+    "category": ["Mathematics"],
+    "description": "MAT201",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Foundations of Engineering: Electricity, Magnetism, and Photonics",
+    "slug": "egr153",
+    "year": "Spring 2026",
+    "month": 1,
+    "duration": 4,
+    "category": ["Physics"],
+    "description": "EGR153",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Foundations of Engineering: Mechanics, Energy, and Waves",
+    "slug": "egr151",
+    "year": "Fall 2025",
+    "month": 9,
+    "duration": 4,
+    "category": ["Physics"],
+    "description": "EGR151",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Priceless (Research Seminar on Measuring Value)",
+    "slug": "wri143",
+    "year": "Spring 2026",
+    "month": 1,
+    "duration": 4,
+    "category": ["Seminars"],
+    "description": "WRI143",
+    "technologies": [],
+    "url": ""
+  },
+  {
+    "title": "Families and History",
+    "slug": "frs102",
+    "year": "Spring 2026",
+    "month": 1,
+    "duration": 4,
+    "category": ["Seminars"],
+    "description": "FRS102",
+    "technologies": [],
+    "url": ""
+  }
+].sort((a, b) => {
+  const yearA = parseInt(a.year.split(" ")[1]);
+  const yearB = parseInt(b.year.split(" ")[1]);
+  return yearB - yearA || b.month - a.month;
+});
 
 const toMonths = (year, month) => parseInt(year) * 12 + month;
 const NOW_MONTHS = toMonths(new Date().getFullYear(), new Date().getMonth() + 1);
@@ -182,12 +286,23 @@ const COLOR_MAP = {
   "technologies-python": "#ff69b4",
   "technologies-django": "#b0e0e6",
 
-  "color1": "#ffdab9",
-  "color2": "olive",
-  "color3": "tan",
-  "color4": "#add8e6",
-  "color5": "#d8bfd8",
-  "color6": "#fafad2",
+  "category-mobile-app": "#6495ed", // same as dev
+  "category-cloud-automation": "#00b953",
+  "category-scraping": "tan",
+  "category-production": "#ffe4e1", // same as jupyter/colab
+  "category-rag": "#eeb7ee", // same as research
+
+  "technologies-pinecone": "#1ee477",
+  "technologies-nfc": "#ebdac5", // same as supabase
+  "technologies-regex": "#ffdab9",
+  "technologies-cad": "#fafad2",
+  "technologies-langchain": "#d8bfd8",
+  "technologies-rest-apis": "khaki",
+  "technologies-dart/flutter": "#add8e6",
+  "technologies-gcp": "plum", // same as figma
+  "technologies-firebase": "#deb887", // same as nextjs
+  "technologies-gradio": "#f3add0", //same as newton
+  "technologies-git": "#daedf3", // same as quant
 };
 
 const slugify = (s) =>
@@ -203,7 +318,7 @@ const ACCENT_COLORS = [
 
 const accentFontFamily = '"Marist", Georgia, "Times New Roman", serif';
 const GRID_EXPERIENCES = "repeat(5, 1fr)";
-const GRID_PROJECTS = "0.4fr 1fr 1fr 1fr 2fr";
+const GRID_PROJECTS = "repeat(5, 1fr)";
 
 // ─── Components ─────────────────────────────────────────────────────
 
@@ -523,7 +638,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
           style={{
             gridColumn: "span 2",
             display: isMobile ? "none" : "grid",
-            gridTemplateColumns: "1fr 2fr",
+            gridTemplateColumns: "repeat(2, 1fr)",
           }}
           onMouseEnter={() => !isMobile && setHovered({ slug, year })}
           onMouseLeave={() => setHovered(null)}
@@ -564,7 +679,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
             style={{
               gridColumn: "span 2",
               display: "grid",
-              gridTemplateColumns: "1fr 2fr",
+              gridTemplateColumns: "repeat(2, 1fr)",
             }}
           >
             {metaGroups.map(({ type, items }) => (
@@ -817,9 +932,14 @@ export default function Portfolio() {
               textAlign: isMobile ? "left" : "right",
               fontWeight: 700,
               ...(isMobile ? { gridColumn: "4 / span 3" } : {}),
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            Updated {__BUILD_DATE__}
+            <span>Updated {__BUILD_DATE__}</span>
+            <span>Design from <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer">
+              Nicole Ho
+            </a>'s site</span>
           </div>
         </div>
       </div>
