@@ -102,7 +102,7 @@ const PROJECTS_DATA = [
     "duration": 1,
     "category": ["Web Development"],
     "description": "Designer-inspired archive featuring enhanced accessibility and structured project tables.",
-    "technologies": ["ReactJS", "HTML/CSS"],
+    "technologies": ["ReactJS", "HTML/CSS", "Cloudflare"], // + Git + GitHub Pages
     "url": "https://github.com/matnvd/matnvd.github.io"
   },
   {
@@ -333,6 +333,7 @@ const COLOR_MAP = {
   "technologies-latex": "#1ee477", // same as pinecone
   "technologies-java": "#ff98cb", // same as arxiv
   "technologies-r": "#deb887", // same as nextjs
+  "technologies-cloudflare": "#ffb14b",
   "technologies-solidworks": "#dfcaae", // same as railway
 };
 
