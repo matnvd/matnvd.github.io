@@ -158,7 +158,7 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   );
 }
 
-function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed }) {
+function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive, isMobile, revealed, setHoveredCol }) {
   const { title, year, slug, role, url, category, technologies } = project;
   const showYear = prevYear !== year;
   const isHovered = hovered?.slug === slug;
@@ -266,6 +266,8 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
                 display: "grid",
                 gridTemplateColumns: `repeat(${items.length}, 1fr)`,
               }}
+              onMouseEnter={() => setHoveredCol(type)}
+              onMouseLeave={() => setHoveredCol(null)}
             >
               {items.map((val) => (
                 <MetaButton
@@ -415,6 +417,7 @@ export default function Portfolio() {
   const [copied, setCopied] = useState(false);
   const [active, setActive] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const [hoveredCol, setHoveredCol] = useState(null);
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const navRef = useRef(null);
@@ -464,7 +467,7 @@ export default function Portfolio() {
   };
 
   // in future, add 3rd category "type"? for internships/research/co-curriculars?
-  const colHeaders = ["Foci", "Technologies"];
+  const colHeaders = [{ label: "Foci", type: "category" }, { label: "Technologies", type: "technologies" }];
 
   return (
     <div
@@ -574,12 +577,12 @@ export default function Portfolio() {
               Experience
             </div>
             {!isMobile ? (
-              colHeaders.map((h) => (
+              colHeaders.map(({ label, type }) => (
                 <div
-                  key={h}
+                  key={type}
                   style={{ gridColumn: "span 1", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}
                 >
-                  {h}
+                  {hoveredCol === type ? <span style={{opacity: 0.4 }}>Click to filter</span> : label}
                 </div>
               ))
             ) : (
@@ -602,6 +605,7 @@ export default function Portfolio() {
                 setActive={setActive}
                 isMobile={isMobile}
                 revealed={revealed}
+                setHoveredCol={setHoveredCol}
               />
             ))}
           </div>
