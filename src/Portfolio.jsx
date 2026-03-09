@@ -822,6 +822,13 @@ export default function Portfolio() {
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [tableIndex, setTableIndex] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      return savedTheme === 'light' ? false : true;
+    }
+    return true;
+  });
   const TABLE_NAMES = ["Experiences", "Projects", "Coursework"];
   const TABLE_DATA = [EXPERIENCES_DATA, PROJECTS_DATA, COURSEWORK_DATA];
   const activeData = TABLE_DATA[tableIndex] ?? EXPERIENCES_DATA;
@@ -842,6 +849,24 @@ export default function Portfolio() {
   useEffect(() => {
     document.documentElement.style.setProperty("--color-accent", accentColor);
   }, [accentColor]);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -980,9 +1005,36 @@ export default function Portfolio() {
             }}
           >
             <span>Updated {__BUILD_DATE__}</span>
-            <span>Design from <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer">
+            <span>Design from <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"} onMouseLeave={e => e.currentTarget.style.color = "inherit"}>
               Nicole Ho
             </a>'s site</span>
+
+            <div
+              style={{
+                textAlign: "right",
+                fontWeight: 700,
+                gridColumn: "6 / 7",
+                display: isMobile ? "none" : "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                style={{
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  fontWeight: 700,
+                  color: "inherit",
+                  transition: "color 0.15s",
+                  padding: "0",
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--gray-400)"}
+                onMouseLeave={e => e.currentTarget.style.color = "inherit"}
+              >
+                {isDarkMode ? "Light Mode" : "Dark Mode"}
+              </button>
+            </div>
           </div>
 
           <div
@@ -1050,7 +1102,7 @@ export default function Portfolio() {
               zIndex: 10,
               fontSize: "0.9rem",
               fontFamily: accentFontFamily,
-              color: "#fff",
+              color: "var(--foreground)",
             }}
           >
             <div style={{ gridColumn: "span 1", paddingTop: "4px", borderTop: "1px solid var(--gray-300)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
