@@ -542,7 +542,7 @@ export default function Portfolio() {
               ...(isMobile ? { gridColumn: "4 / span 3" } : {}),
             }}
           >
-            Updated 2026-03-08
+            Updated {__BUILD_DATE__}
           </div>
         </div>
       </div>

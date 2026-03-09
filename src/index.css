@@ -92,7 +92,8 @@ ul, ol {
 
 /* ─── Nav link hover ─── */
 .nav-links a:hover,
-.nav-links button:hover {
+.nav-links button:hover,
+.nav-links span:hover {
   color: var(--gray-400);
   transition: color 0.15s;
 }
