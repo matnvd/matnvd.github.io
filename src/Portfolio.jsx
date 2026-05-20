@@ -871,6 +871,7 @@ export default function Portfolio() {
   const timeline = computeTimeline(activeData.length ? activeData : EXPERIENCES_DATA);
   const navRef = useRef(null);
   const contentRef = useRef(null);
+  const carouselContainerRef = useRef(null);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
   const isDragging = useRef(false);
@@ -1046,11 +1047,22 @@ export default function Portfolio() {
 
   useEffect(() => {
     if (!contentRef.current) return;
+
+    // Set carousel height: enough for the current panel, but always at least
+    // (viewport − carouselTop + 80) so scrollTo(80) always succeeds and the
+    // first row lands at a consistent viewport position across all tabs.
+    const panel = contentRef.current.children[tableIndex];
+    if (panel && carouselContainerRef.current) {
+      const minH = window.innerHeight - carouselContainerRef.current.offsetTop + 80;
+      carouselContainerRef.current.style.height = `${Math.max(panel.offsetHeight, minH)}px`;
+    }
+
     if (!hasMounted.current) {
       hasMounted.current = true;
       contentRef.current.style.transform = carouselX(tableIndex);
       return;
     }
+    if (window.scrollY > 80) window.scrollTo({ top: 80, behavior: "smooth" });
     if (swipeFromIndex.current !== null) {
       // Swipe already animated the carousel imperatively — just clean up.
       swipeFromIndex.current = null;
@@ -1397,10 +1409,10 @@ export default function Portfolio() {
           </div>
 
           {/* Rows — 3-panel carousel */}
-          <div style={{ overflow: "hidden" }}>
+          <div ref={carouselContainerRef} style={{ overflow: "hidden" }}>
             <div
               ref={contentRef}
-              style={{ display: "flex", width: `${N * 100}%`, willChange: "transform" }}
+              style={{ display: "flex", width: `${N * 100}%`, willChange: "transform", alignItems: "flex-start" }}
             >
               {/* Panel 0: Experiences */}
               <div style={{ width: `${100 / N}%`, flexShrink: 0 }}>
