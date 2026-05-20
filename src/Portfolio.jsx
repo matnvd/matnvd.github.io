@@ -763,7 +763,31 @@ export default function Portfolio() {
   const [isMobile, setIsMobile] = useState(false);
   const [tableIndex, setTableIndex] = useState(0);
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [dividerPos, setDividerPos] = useState(0.5);
+  const dividerPosRef = useRef(0.5);
+  const dividerContainerRef = useRef(null);
+  const leftPanelRef = useRef(null);
+  const dividerDragStart = useRef(null);
+
+  const handleDividerTouchStart = (e) => {
+    e.stopPropagation();
+    dividerDragStart.current = e.touches[0].clientX;
+  };
+  const handleDividerTouchMove = (e) => {
+    e.stopPropagation();
+    if (dividerDragStart.current === null || !dividerContainerRef.current) return;
+    const dx = e.touches[0].clientX - dividerDragStart.current;
+    dividerDragStart.current = e.touches[0].clientX;
+    const w = dividerContainerRef.current.offsetWidth;
+    const next = Math.max(0.05, Math.min(0.95, dividerPosRef.current + dx / w));
+    dividerPosRef.current = next;
+    if (leftPanelRef.current) leftPanelRef.current.style.width = `${next * 100}%`;
+  };
+  const handleDividerTouchEnd = (e) => {
+    e.stopPropagation();
+    setDividerPos(dividerPosRef.current);
+    dividerDragStart.current = null;
+  };
 
   const hoverSound = useRef(null);
   const switchSound = useRef(null);
@@ -928,6 +952,17 @@ export default function Portfolio() {
   }, []);
 
   useEffect(() => {
+    if (!isMobile || !dividerContainerRef.current) return;
+    const W = dividerContainerRef.current.offsetWidth;
+    if (W === 0) return;
+    // bar sits 7.5px into the divider handle; subtract so bar lands at W/2
+    const pos = Math.max(0.05, Math.min(0.95, (W / 2 - 7.5) / W));
+    dividerPosRef.current = pos;
+    setDividerPos(pos);
+    if (leftPanelRef.current) leftPanelRef.current.style.width = `${pos * 100}%`;
+  }, [isMobile]);
+
+  useEffect(() => {
     if (!navRef.current) return;
     const measure = () => {
       const h = Math.floor(navRef.current.offsetHeight);
@@ -936,7 +971,7 @@ export default function Portfolio() {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [isMobile, menuOpen]);
+  }, [isMobile]);
 
   useEffect(() => {
     const timer = setTimeout(() => setRevealed(true), 400);
@@ -1023,7 +1058,7 @@ export default function Portfolio() {
             background: "var(--background)",
           }}
         >
-          <div style={{ gridColumn: isMobile ? "span 6" : "span 2", fontWeight: 700 }}>
+          <div style={{ gridColumn: "span 2", fontWeight: 700, display: isMobile ? "none" : undefined }}>
             <div style={{ display: "inline-flex", alignItems: "flex-start" }}>
               <a href="#" style={{ display: "block" }}>
                 <div
@@ -1048,133 +1083,151 @@ export default function Portfolio() {
             </div>
           </div>
 
+          {/* Desktop: links centered */}
           <div
             className="nav-links"
             style={{
-              gridColumn: isMobile ? "1 / span 6" : "3 / span 2",
-              ...(isMobile ? { gridRow: 2 } : {}),
+              gridColumn: "3 / span 2",
               fontWeight: 700,
-              display: "flex",
+              display: isMobile ? "none" : "flex",
               alignItems: "center",
-              justifyContent: isMobile ? "flex-start" : "center",
+              justifyContent: "center",
             }}
           >
-            {!isMobile && (
-              <>
-                <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
-                  {copied ? "Copied" : "Email"}
-                </span>
-                <span>, </span>
-                <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-                  LinkedIn
-                </a>
-                <span>, </span>
-                <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-                  GitHub
-                </a>
-              </>
-            )}
-            {isMobile && (
-              <button
-                onClick={() => { playSwitch(); setMenuOpen(m => !m); }}
-                onMouseEnter={playHover}
-                style={{
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  color: menuOpen ? "var(--foreground)" : "var(--gray-400)",
-                  transition: "color 0.15s",
-                }}
-              >
-                {menuOpen ? "✕" : "···"}
-              </button>
-            )}
+            <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
+              {copied ? "Copied" : "Email"}
+            </span>
+            <span>, </span>
+            <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>LinkedIn</a>
+            <span>, </span>
+            <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>GitHub</a>
           </div>
 
+          {/* Desktop: updated + controls top-right */}
           <div
             style={{
-              textAlign: isMobile ? "left" : "right",
+              gridColumn: "5 / span 2",
+              textAlign: "right",
               fontWeight: 700,
-              ...(isMobile ? { gridColumn: "1 / span 6", gridRow: 3 } : { gridColumn: "5 / span 2" }),
-              display: isMobile ? (menuOpen ? "flex" : "none") : "flex",
+              display: isMobile ? "none" : "flex",
               flexDirection: "column",
-              paddingLeft: isMobile ? "16px" : 0,
             }}
           >
-            {isMobile && (
-              <span style={{ marginBottom: "4px" }}>
-                <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
-                  {copied ? "Copied" : "Email"}
-                </span>
-                <span>, </span>
-                <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-                  LinkedIn
-                </a>
-                <span>, </span>
-                <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-                  GitHub
-                </a>
-              </span>
-            )}
             <span>Updated {__BUILD_DATE__}</span>
-            <span>Design inspired by <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => {e.currentTarget.style.color = "var(--gray-400)"; playHover();}} onMouseLeave={e => e.currentTarget.style.color = "inherit"} onClick={playSwitch}>
-              Nicole Ho
-            </a></span>
-
-            <div
-              style={{
-                fontWeight: 700,
-                display: "flex",
-                justifyContent: isMobile ? "flex-start" : "flex-end",
-                gap: "8px"
-              }}
-            >
-              <button
-                onClick={() => { playSwitch(); setIsDarkMode(!isDarkMode); }}
-                style={{
-                  cursor: "pointer",
-                  background: "none",
-                  border: "none",
-                  fontWeight: 700,
-                  color: "inherit",
-                  transition: "color 0.15s",
-                  padding: "0",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }}
-                onMouseLeave={e => e.currentTarget.style.color = "inherit"}
-              >
+            <span>Design inspired by <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }} onMouseLeave={e => e.currentTarget.style.color = "inherit"} onClick={playSwitch}>Nicole Ho</a></span>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+              <button onClick={() => { playSwitch(); setIsDarkMode(!isDarkMode); }} style={{ cursor: "pointer", fontWeight: 700, color: "inherit", transition: "color 0.15s" }} onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }} onMouseLeave={e => e.currentTarget.style.color = "inherit"}>
                 {isDarkMode ? "Light Mode" : "Dark Mode"}
               </button>
               <span style={{ opacity: 0.3 }}>|</span>
-              <button
-                onClick={() => { 
-                    const newState = !isSoundEnabled;
-                    setIsSoundEnabled(newState);
-                    // only play sound when turning sound ON, not when turning OFF
-                    if (newState && switchSound.current) {
-                        switchSound.current.currentTime = 0;
-                        switchSound.current.play().catch(() => {});
-                    }
-                }}
-                style={{
-                  cursor: "pointer",
-                  background: "none",
-                  border: "none",
-                  fontWeight: 700,
-                  color: "inherit",
-                  transition: "color 0.15s",
-                  padding: "0",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }}
-                onMouseLeave={e => e.currentTarget.style.color = "inherit"}
-              >
+              <button onClick={() => { const s = !isSoundEnabled; setIsSoundEnabled(s); if (s && switchSound.current) { switchSound.current.currentTime = 0; switchSound.current.play().catch(() => {}); } }} style={{ cursor: "pointer", fontWeight: 700, color: "inherit", transition: "color 0.15s" }} onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }} onMouseLeave={e => e.currentTarget.style.color = "inherit"}>
                 Sound {isSoundEnabled ? "Off" : "On"}
               </button>
             </div>
           </div>
 
+          {/* Mobile: split-panel reveal divider */}
+          {isMobile && (
+            <div
+              ref={dividerContainerRef}
+              style={{
+                gridColumn: "1 / span 6",
+                gridRow: 1,
+                display: "flex",
+                overflow: "hidden",
+                fontWeight: 700,
+                cursor: "ew-resize",
+                userSelect: "none",
+              }}
+              onTouchStart={handleDividerTouchStart}
+              onTouchMove={handleDividerTouchMove}
+              onTouchEnd={handleDividerTouchEnd}
+            >
+              {/* Left panel: name + info — content fixed-width so it clips without reflowing */}
+              <div ref={leftPanelRef} style={{ width: `${dividerPos * 100}%`, overflow: "hidden", flexShrink: 0 }}>
+                <div style={{ width: "max-content", display: "flex", alignItems: "flex-start" }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginRight: "4px", marginTop: "3px", gap: "3px", flexShrink: 0 }}>
+                    <a href="#" style={{ display: "block" }}>
+                      <div style={{ width: "12px", height: "12px", backgroundColor: accentColor, transition: "background-color 0.3s" }} />
+                    </a>
+                    <button
+                      onClick={() => { playSwitch(); setIsDarkMode(!isDarkMode); }}
+                      style={{ cursor: "pointer", padding: 0, background: "none", border: "none", flexShrink: 0, display: "flex", alignItems: "center" }}
+                    >
+                      {isDarkMode ? (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--foreground)">
+                          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                      ) : (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--foreground)" stroke="var(--foreground)" strokeWidth="2" strokeLinecap="round">
+                          <circle cx="12" cy="12" r="4" stroke="none"/>
+                          <line x1="12" y1="2" x2="12" y2="5"/>
+                          <line x1="12" y1="19" x2="12" y2="22"/>
+                          <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/>
+                          <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
+                          <line x1="2" y1="12" x2="5" y2="12"/>
+                          <line x1="19" y1="12" x2="22" y2="12"/>
+                          <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/>
+                          <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+                        </svg>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => { const s = !isSoundEnabled; setIsSoundEnabled(s); if (s && switchSound.current) { switchSound.current.currentTime = 0; switchSound.current.play().catch(() => {}); } }}
+                      style={{ cursor: "pointer", padding: 0, background: "none", border: "none", flexShrink: 0, display: "flex", alignItems: "center" }}
+                    >
+                      {isSoundEnabled ? (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--foreground)" stroke="var(--foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z" stroke="none"/>
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none"/>
+                        </svg>
+                      ) : (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--foreground)" stroke="var(--foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z" stroke="none"/>
+                          <line x1="23" y1="9" x2="17" y2="15"/>
+                          <line x1="17" y1="9" x2="23" y2="15"/>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                  <div style={{ whiteSpace: "nowrap" }}>
+                    <h1 style={{ display: "inline", fontWeight: 700 }}>
+                      <a href="/" onClick={playSwitch}>Mathias Nguyen-Van-Duong</a>
+                    </h1>
+                    <span>,</span>
+                    <p>Computer Science B.S.E. Student, Princeton</p>
+                    <p>Experiences, Projects, and Coursework: 2025–{currentYear}</p>
+                  </div>
+                </div>
+              </div>
+              {/* Divider handle: arrow · bar · arrow */}
+              <div style={{ flexShrink: 0, display: "flex", alignItems: "center", cursor: "ew-resize", gap: "3px" }}>
+                <div style={{ width: "4px", height: "6px", backgroundColor: "var(--gray-400)", clipPath: "polygon(100% 0%, 0% 50%, 100% 100%)", flexShrink: 0 }} />
+                <div style={{ width: "1px", alignSelf: "stretch", backgroundColor: "var(--gray-300)" }} />
+                <div style={{ width: "4px", height: "6px", backgroundColor: "var(--gray-400)", clipPath: "polygon(0% 0%, 100% 50%, 0% 100%)", flexShrink: 0 }} />
+              </div>
+              {/* Right panel: links + controls — absolutely anchored to right edge, clips from left */}
+              <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
+                <div style={{ position: "absolute", right: 0, top: 0, display: "flex", flexDirection: "column", alignItems: "flex-end", whiteSpace: "nowrap" }}>
+                  <div>
+                    <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
+                      {copied ? "Copied" : "Email"}
+                    </span>
+                    <span>, </span>
+                    <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>LinkedIn</a>
+                    <span>, </span>
+                    <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>GitHub</a>
+                  </div>
+                  <span>Updated {__BUILD_DATE__}</span>
+                  <span>Inspired by <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => { e.currentTarget.style.color = "var(--gray-400)"; playHover(); }} onMouseLeave={e => e.currentTarget.style.color = "inherit"} onClick={playSwitch}>Nicole Ho</a></span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div
             style={{
-              gridRow: isMobile ? 4 : 2,
+              gridRow: 2,
               gridColumn: "1 / -1",
               display: "flex",
               flexDirection: "column",
