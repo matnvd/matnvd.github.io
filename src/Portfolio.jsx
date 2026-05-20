@@ -153,6 +153,61 @@ const PROJECTS_DATA = [
 
 const COURSEWORK_DATA = [
   {
+    "title": "Computer Vision",
+    "slug": "cos429",
+    "year": "Fall 2026",
+    "month": 9,
+    "duration": 4,
+    "category": ["Computer Science"],
+    "description": "COS429",
+    "technologies": ["Python", "NumPy/Pandas/PyTorch", "Jupyter", ], // update?
+    "url": ""
+  },
+  {
+    "title": "Probability and Stochastic Systems",
+    "slug": "orf309",
+    "year": "Fall 2026",
+    "month": 9,
+    "duration": 4,
+    "category": ["Operations Research & Financial Engineering"],
+    "description": "ORF309",
+    "technologies": ["LaTeX"], // add others?
+    "url": ""
+  },
+  {
+    "title": "Principles of Computer System Design",
+    "slug": "cos316",
+    "year": "Fall 2026",
+    "month": 9,
+    "duration": 4,
+    "category": ["Computer Science"],
+    "description": "COS316",
+    "technologies": ["Git", "Unix"], // update?
+    "url": ""
+  },
+  {
+    "title": "Introduction to Programming Systems",
+    "slug": "cos217",
+    "year": "Fall 2026",
+    "month": 9,
+    "duration": 4,
+    "category": ["Computer Science"],
+    "description": "COS217",
+    "technologies": ["C", "Assembly", "Linux"], // add machine?
+    "url": ""
+  },
+  {
+    "title": "Introduction to Macroeconomics",
+    "slug": "eco101",
+    "year": "Fall 2026",
+    "month": 9,
+    "duration": 4,
+    "category": ["Economics"],
+    "description": "ECO101",
+    "technologies": ["N/A"], // add machine?
+    "url": ""
+  },
+  {
     "title": "Introduction to Machine Learning",
     "slug": "cos324",
     "year": "Spring 2026",
@@ -160,7 +215,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Computer Science"],
     "description": "COS324",
-    "technologies": ["Python", "Jupyter", "LaTeX"],
+    "technologies": ["Python", "NumPy/Pandas/PyTorch", "Jupyter", ], // add latex? make pandas/pytorch visible?
     "url": ""
   },
   {
@@ -235,7 +290,7 @@ const COURSEWORK_DATA = [
     "year": "Spring 2026",
     "month": 1,
     "duration": 4,
-    "category": ["Seminar"],
+    "category": ["Economics", "Seminar"],
     "description": "WRI143",
     "technologies": ["Research"],
     "url": ""
@@ -246,7 +301,7 @@ const COURSEWORK_DATA = [
     "year": "Spring 2026",
     "month": 1,
     "duration": 4,
-    "category": ["Seminar"],
+    "category": ["History", "Seminar"],
     "description": "FRS102",
     "technologies": ["Research"],
     "url": ""
@@ -289,6 +344,10 @@ const COLOR_MAP = {
   "technologies-arxiv": "#ff98cb",
   "technologies-newton": "#f3add0",
   "technologies-nextjs": "#deb887",
+  "technologies-c": "#ff0000",
+  "technologies-assembly": "#848484",
+  "technologies-linux": "#bababa",
+  "technologies-unix": "#bababa",
   "technologies-gee": "#91b3f2",
   "technologies-supabase": "#ebdac5",
   "technologies-railway": "#dfcaae",
@@ -319,6 +378,7 @@ const COLOR_MAP = {
   "technologies-firebase": "#deb887", // same as nextjs
   "technologies-gradio": "#f3add0", //same as newton
   "technologies-git": "#daedf3", // same as quant
+  "technologies-numpy/pandas/pytorch": "#ff81c0",
 
   // coursework colors
   "category-computer-science": "tomato", // same as ml/ai
@@ -326,6 +386,8 @@ const COLOR_MAP = {
   "category-mathematics": "#6495ed", // same as dev
   "category-physics": "plum", // same as figma/gcp
   "category-seminar": "#daedf3", // same as figma
+  "category-economics": "#228B22",
+  "category-history": "#c6cd48",
 
   "technologies-research": "#eeb7ee", // same as research/rag
   "technologies-jupyter": "#ffe4e1", // same as jupyter/colab
