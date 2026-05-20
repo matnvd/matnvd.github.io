@@ -84,6 +84,17 @@ const EXPERIENCES_DATA = [
 // uses end date as month instead of start like experiences, adjusted some to re-order by priority
 const PROJECTS_DATA = [
   {
+    "title": "VITAL (HackPrinceton S26 Track Winner)",
+    "slug": "vital",
+    "year": "2026",
+    "month": 4,
+    "duration": 1,
+    "category": ["ML/AI", "Hackathon"],
+    "description": "Hospital triage alert system that monitors 12+ video feeds to identify patient distress",
+    "technologies": ["ReactJS", "Pose Detection", "VLMs"],
+    "url": "https://github.com/matnvd/HackPrincetonS26-VITAL"
+  },
+  {
     "title": "Project R.I.P. (Roleplay Inference Pipeline)",
     "slug": "project-rip",
     "year": "2026",
@@ -292,7 +303,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Economics", "Seminar"],
     "description": "WRI143",
-    "technologies": ["Research", "Data"],
+    "technologies": ["Research", "Data", "R"],
     "url": ""
   },
   {
@@ -365,6 +376,7 @@ const COLOR_MAP = {
   "category-production": "#ffe4e1", // same as jupyter/colab
   "category-rag": "#eeb7ee", // same as research
   "category-web-development": "#b0e0e6", // same as django
+  "category-hackathon": "#dfdfdf", 
 
   "technologies-html/css": "#f3ecda",
   "technologies-pinecone": "#1ee477",
@@ -375,6 +387,8 @@ const COLOR_MAP = {
   "technologies-rest-apis": "khaki",
   "technologies-dart/flutter": "#5eb1cd",
   "technologies-reactjs": "#729aff",
+  "technologies-pose-detection": "#db97fb",
+  "technologies-vlms": "#fb9797",
   "technologies-gcp": "plum", // same as figma
   "technologies-firebase": "#deb887", // same as nextjs
   "technologies-gradio": "#f3add0", //same as newton
