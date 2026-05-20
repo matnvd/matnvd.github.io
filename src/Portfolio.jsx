@@ -751,91 +751,6 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
   );
 }
 
-function MobileKey({ active, setActive, visible }) {
-  const [expanded, setExpanded] = useState(false);
-  const allCategories = [...new Set(EXPERIENCES_DATA.flatMap((p) => p.category))].sort();
-  const allTech = [...new Set(EXPERIENCES_DATA.flatMap((p) => p.technologies))].sort();
-  const hasActive = !!(active?.category || active?.technologies);
-
-  const groups = [
-    { type: "category", items: allCategories },
-    { type: "technologies", items: allTech },
-  ];
-
-  if (!visible) return null;
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "8px",
-        left: "8px",
-        right: "8px",
-        background: "#e5e7eb",
-        zIndex: 100,
-        padding: "8px",
-        fontSize: "0.85rem",
-      }}
-    >
-      {expanded && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", marginBottom: "8px" }}>
-          {groups.map(({ type, items }) => (
-            <div key={type} style={{ display: "flex", flexDirection: "column" }}>
-              <div
-                style={{
-                  padding: "4px",
-                  fontWeight: 700,
-                  textTransform: "capitalize",
-                  background: "#f3f4f6",
-                  opacity: 0.5,
-                }}
-              >
-                {type}
-              </div>
-              {items.map((val) => (
-                <button
-                  key={val}
-                  onClick={() =>
-                    setActive((prev) =>
-                      prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                    )
-                  }
-                  style={{
-                    padding: "4px",
-                    textAlign: "left",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    backgroundColor: getColor(type, val),
-                    border: active?.[type] === val ? "2px solid black" : "2px solid transparent",
-                  }}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "8px" }}>
-        <button
-          style={{
-            fontWeight: 700,
-            cursor: "pointer",
-            opacity: hasActive ? 1 : 0,
-            pointerEvents: hasActive ? "auto" : "none",
-            transition: "opacity 0.15s",
-          }}
-          onClick={() => setActive(null)}
-        >
-          Reset filters
-        </button>
-        <button style={{ fontWeight: 700, cursor: "pointer" }} onClick={() => setExpanded(!expanded)}>
-          {expanded ? "Hide" : "Show"} key
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ─── Main App ───────────────────────────────────────────────────────
 export default function Portfolio() {
@@ -865,27 +780,76 @@ export default function Portfolio() {
   const activeData = TABLE_DATA[tableIndex] ?? EXPERIENCES_DATA;
   const timeline = computeTimeline(activeData.length ? activeData : EXPERIENCES_DATA);
   const navRef = useRef(null);
+  const contentRef = useRef(null);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
+  const isDragging = useRef(false);
+  const isVertical = useRef(false);
+  const isAnimating = useRef(false);
+  const swipeFromIndex = useRef(null);
+  const hasMounted = useRef(false);
   const currentYear = new Date().getFullYear();
+  const N = TABLE_NAMES.length;
+
+  const carouselX = (index, offsetPx = 0) =>
+    `translateX(calc(${-(index / N) * 100}% + ${offsetPx}px))`;
 
   const handleTouchStart = (e) => {
+    if (isAnimating.current) return;
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    isDragging.current = false;
+    isVertical.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    if (touchStartX.current === null || isAnimating.current) return;
+    const dx = e.touches[0].clientX - touchStartX.current;
+    const dy = e.touches[0].clientY - touchStartY.current;
+    if (!isDragging.current && !isVertical.current) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (Math.abs(dy) >= Math.abs(dx)) { isVertical.current = true; return; }
+      isDragging.current = true;
+    }
+    if (isVertical.current) return;
+    if (contentRef.current) {
+      contentRef.current.style.transition = "none";
+      contentRef.current.style.transform = carouselX(tableIndex, dx);
+    }
   };
 
   const handleTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
+    if (touchStartX.current === null || isAnimating.current) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
-    const dy = e.changedTouches[0].clientY - touchStartY.current;
     touchStartX.current = null;
     touchStartY.current = null;
-    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
-    playSwitch();
-    setTableIndex(prev => dx < 0
-      ? (prev + 1) % TABLE_NAMES.length
-      : (prev - 1 + TABLE_NAMES.length) % TABLE_NAMES.length
-    );
+    const wasDragging = isDragging.current;
+    isDragging.current = false;
+    isVertical.current = false;
+    if (!wasDragging) return;
+    const threshold = window.innerWidth * 0.25;
+    if (Math.abs(dx) >= threshold) {
+      const dir = dx < 0 ? -1 : 1;
+      const nextIndex = (tableIndex - dir + N) % N;
+      isAnimating.current = true;
+      swipeFromIndex.current = tableIndex;
+      if (contentRef.current) {
+        contentRef.current.style.transition = "transform 0.25s ease";
+        contentRef.current.style.transform = carouselX(nextIndex);
+      }
+      setTimeout(() => {
+        playSwitch();
+        setTableIndex(nextIndex);
+      }, 250);
+    } else {
+      if (contentRef.current) {
+        contentRef.current.style.transition = "transform 0.25s ease";
+        contentRef.current.style.transform = carouselX(tableIndex);
+        setTimeout(() => {
+          if (contentRef.current) contentRef.current.style.transition = "";
+        }, 250);
+      }
+    }
   };
 
   // Cycle accent color
@@ -979,6 +943,30 @@ export default function Portfolio() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!contentRef.current) return;
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      contentRef.current.style.transform = carouselX(tableIndex);
+      return;
+    }
+    if (swipeFromIndex.current !== null) {
+      // Swipe already animated the carousel imperatively — just clean up.
+      swipeFromIndex.current = null;
+      contentRef.current.style.transition = "";
+      isAnimating.current = false;
+      return;
+    }
+    // Button / keyboard nav: animate to new position.
+    isAnimating.current = true;
+    contentRef.current.style.transition = "transform 0.25s ease";
+    contentRef.current.style.transform = carouselX(tableIndex);
+    setTimeout(() => {
+      if (contentRef.current) contentRef.current.style.transition = "";
+      isAnimating.current = false;
+    }, 250);
+  }, [tableIndex]);
+
   // for now hide scrollbar. once get more experiences/projects, // update so that u use code block above
   useEffect(() => {
     const style = document.createElement('style');
@@ -1009,6 +997,7 @@ export default function Portfolio() {
   return (
     <div
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{
         padding: "0 8px",
@@ -1018,6 +1007,7 @@ export default function Portfolio() {
         justifyContent: "space-between",
         lineHeight: 1.2,
         fontSize: isMobile ? "0.9rem" : "1.00rem",
+        touchAction: "pan-y",
       }}
     >
       {/* ─── Sticky Nav ─── */}
@@ -1287,10 +1277,15 @@ export default function Portfolio() {
             )}
           </div>
 
-          {/* Rows */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {tableIndex === 0
-              ? activeData.map((experience, i) => (
+          {/* Rows — 3-panel carousel */}
+          <div style={{ overflow: "hidden" }}>
+            <div
+              ref={contentRef}
+              style={{ display: "flex", width: `${N * 100}%`, willChange: "transform" }}
+            >
+              {/* Panel 0: Experiences */}
+              <div style={{ width: `${100 / N}%`, flexShrink: 0 }}>
+                {EXPERIENCES_DATA.map((experience, i) => (
                   <ExperienceRow
                     key={experience.slug}
                     experience={experience}
@@ -1306,12 +1301,15 @@ export default function Portfolio() {
                     onHoverSound={playHover}
                     onClickSound={playSwitch}
                   />
-                ))
-              : activeData.map((project, i) => (
+                ))}
+              </div>
+              {/* Panel 1: Projects */}
+              <div style={{ width: `${100 / N}%`, flexShrink: 0 }}>
+                {PROJECTS_DATA.map((project, i) => (
                   <ProjectRow
                     key={project.slug}
                     project={project}
-                    prevYear={activeData[i - 1]?.year}
+                    prevYear={PROJECTS_DATA[i - 1]?.year}
                     hovered={hovered}
                     setHovered={setHovered}
                     active={active}
@@ -1319,17 +1317,37 @@ export default function Portfolio() {
                     isMobile={isMobile}
                     revealed={revealed}
                     setHoveredCol={setHoveredCol}
-                    showComingSoon={tableIndex !== 2}
+                    showComingSoon={true}
                     onHoverSound={playHover}
                     onClickSound={playSwitch}
                   />
-                ))
-            }
+                ))}
+              </div>
+              {/* Panel 2: Coursework */}
+              <div style={{ width: `${100 / N}%`, flexShrink: 0 }}>
+                {COURSEWORK_DATA.map((course, i) => (
+                  <ProjectRow
+                    key={course.slug}
+                    project={course}
+                    prevYear={COURSEWORK_DATA[i - 1]?.year}
+                    hovered={hovered}
+                    setHovered={setHovered}
+                    active={active}
+                    setActive={setActive}
+                    isMobile={isMobile}
+                    revealed={revealed}
+                    setHoveredCol={setHoveredCol}
+                    showComingSoon={false}
+                    onHoverSound={playHover}
+                    onClickSound={playSwitch}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       </main>
 
-      {isMobile && <MobileKey active={active} setActive={setActive} visible={revealed} />}
     </div>
   );
 }
