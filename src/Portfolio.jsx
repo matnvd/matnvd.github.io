@@ -412,7 +412,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: GRID_EXPERIENCES,
+          gridTemplateColumns: isMobile ? "4rem 1fr" : GRID_EXPERIENCES,
           gap: "8px",
           fontSize: "inherit",
         }}
@@ -447,7 +447,7 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
         {/* Title */}
         <div
           style={{
-            gridColumn: "2 / span 2",
+            gridColumn: isMobile ? "2" : "2 / span 2",
             padding: "8px 0",
             borderTop: "1px solid var(--gray-300)",
             opacity: revealed ? 1 : 0,
@@ -502,6 +502,35 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
               {description}
             </p>
           </a>
+          {isMobile && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "5px" }}>
+              {metaGroups.map(({ type, items }) =>
+                items.map((val) => (
+                  <button
+                    key={`${slug}-${type}-${val}-pill`}
+                    onClick={() => {
+                      onClickSound();
+                      setActive((prev) =>
+                        prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                      );
+                    }}
+                    style={{
+                      padding: "2px 6px",
+                      backgroundColor: getColor(type, val),
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      border: active?.[type] === val ? "1.5px solid var(--foreground)" : "1.5px solid transparent",
+                      transition: "background-color 0.15s",
+                      color: "#000",
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Meta columns (hidden on mobile) */}
@@ -545,39 +574,6 @@ function ExperienceRow({ experience, hovered, setHovered, active, setActive, isM
             </div>
           ))}
         </div>
-
-        {/* Mobile meta (2 cols of colored buttons) */}
-        {isMobile && (
-          <div
-            style={{
-              gridColumn: "span 2",
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-            }}
-          >
-            {metaGroups.map(({ type, items }) => (
-              <div key={`${slug}-${type}-m`} style={{ display: "flex", flexDirection: "column" }}>
-                {items.map((val) => (
-                  <MetaButton
-                    key={`${slug}-${type}-${val}-m`}
-                    type={type}
-                    value={val}
-                    isActive={active?.[type] === val}
-                    isHovered={false}
-                    hasActive={hasActive}
-                    revealed={revealed}
-                    onClick={() => {
-                        onClickSound();
-                        setActive((prev) =>
-                          prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                        );
-                    }}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -601,7 +597,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: GRID_PROJECTS,
+          gridTemplateColumns: isMobile ? "4rem 1fr" : GRID_PROJECTS,
           gap: "8px",
           fontSize: "inherit",
         }}
@@ -623,7 +619,7 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
         {/* Title */}
         <div
           style={{
-            gridColumn: "2 / span 2",
+            gridColumn: isMobile ? "2" : "2 / span 2",
             padding: "8px 0",
             borderTop: "1px solid var(--gray-300)",
             opacity: revealed ? 1 : 0,
@@ -678,6 +674,35 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
               {description}
             </p>
           </a>
+          {isMobile && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginTop: "5px" }}>
+              {metaGroups.map(({ type, items }) =>
+                items.map((val) => (
+                  <button
+                    key={`${slug}-${type}-${val}-pill`}
+                    onClick={() => {
+                      onClickSound();
+                      setActive((prev) =>
+                        prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
+                      );
+                    }}
+                    style={{
+                      padding: "2px 6px",
+                      backgroundColor: getColor(type, val),
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      border: active?.[type] === val ? "1.5px solid var(--foreground)" : "1.5px solid transparent",
+                      transition: "background-color 0.15s",
+                      color: "#000",
+                    }}
+                  >
+                    {val}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Meta columns (hidden on mobile) */}
@@ -721,39 +746,6 @@ function ProjectRow({ project, prevYear, hovered, setHovered, active, setActive,
             </div>
           ))}
         </div>
-
-        {/* Mobile meta */}
-        {isMobile && (
-          <div
-            style={{
-              gridColumn: "span 2",
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-            }}
-          >
-            {metaGroups.map(({ type, items }) => (
-              <div key={`${slug}-${type}-m`} style={{ display: "flex", flexDirection: "column" }}>
-                {items.map((val) => (
-                  <MetaButton
-                    key={`${slug}-${type}-${val}-m`}
-                    type={type}
-                    value={val}
-                    isActive={active?.[type] === val}
-                    isHovered={false}
-                    hasActive={hasActive}
-                    revealed={revealed}
-                    onClick={() => {
-                        onClickSound();
-                        setActive((prev) =>
-                          prev?.[type] === val ? { ...prev, [type]: null } : { ...prev, [type]: val }
-                        );
-                    }}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -856,6 +848,7 @@ export default function Portfolio() {
   const [isMobile, setIsMobile] = useState(false);
   const [tableIndex, setTableIndex] = useState(0);
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const hoverSound = useRef(null);
   const switchSound = useRef(null);
@@ -958,7 +951,7 @@ export default function Portfolio() {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, []);
+  }, [isMobile, menuOpen]);
 
   useEffect(() => {
     const timer = setTimeout(() => setRevealed(true), 400);
@@ -1001,7 +994,7 @@ export default function Portfolio() {
         flexDirection: "column",
         justifyContent: "space-between",
         lineHeight: 1.2,
-        fontSize: "1.00rem",
+        fontSize: isMobile ? "0.9rem" : "1.00rem",
       }}
     >
       {/* ─── Sticky Nav ─── */}
@@ -1045,33 +1038,70 @@ export default function Portfolio() {
           <div
             className="nav-links"
             style={{
-              gridColumn: isMobile ? "2 / span 5" : "3 / span 2",
+              gridColumn: isMobile ? "1 / span 6" : "3 / span 2",
+              ...(isMobile ? { gridRow: 2 } : {}),
               fontWeight: 700,
-              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: isMobile ? "flex-start" : "center",
             }}
           >
-            <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
-              {copied ? "Copied" : "Email"}
-            </span>
-            <span>, </span>
-            <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-              LinkedIn
-            </a>
-            <span>, </span>
-            <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
-              GitHub
-            </a>
+            {!isMobile && (
+              <>
+                <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
+                  {copied ? "Copied" : "Email"}
+                </span>
+                <span>, </span>
+                <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
+                  LinkedIn
+                </a>
+                <span>, </span>
+                <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
+                  GitHub
+                </a>
+              </>
+            )}
+            {isMobile && (
+              <button
+                onClick={() => { playSwitch(); setMenuOpen(m => !m); }}
+                onMouseEnter={playHover}
+                style={{
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  color: menuOpen ? "var(--foreground)" : "var(--gray-400)",
+                  transition: "color 0.15s",
+                }}
+              >
+                {menuOpen ? "✕" : "···"}
+              </button>
+            )}
           </div>
 
           <div
             style={{
               textAlign: isMobile ? "left" : "right",
               fontWeight: 700,
-              ...(isMobile ? { gridColumn: "4 / span 3" } : { gridColumn: "5 / span 2" }),
-              display: "flex",
+              ...(isMobile ? { gridColumn: "1 / span 6", gridRow: 3 } : { gridColumn: "5 / span 2" }),
+              display: isMobile ? (menuOpen ? "flex" : "none") : "flex",
               flexDirection: "column",
+              paddingLeft: isMobile ? "16px" : 0,
             }}
           >
+            {isMobile && (
+              <span style={{ marginBottom: "4px" }}>
+                <span onClick={copyEmail} style={{ cursor: "pointer" }} onMouseEnter={playHover}>
+                  {copied ? "Copied" : "Email"}
+                </span>
+                <span>, </span>
+                <a href="https://linkedin.com/in/mathiasnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
+                  LinkedIn
+                </a>
+                <span>, </span>
+                <a href="https://github.com/matnvd" target="_blank" rel="noopener noreferrer" onClick={playSwitch} onMouseEnter={playHover}>
+                  GitHub
+                </a>
+              </span>
+            )}
             <span>Updated {__BUILD_DATE__}</span>
             <span>Design inspired by <a href="https://www.nicoleho.net/" target="_blank" rel="noopener noreferrer" style={{ cursor: "pointer", transition: "color 0.15s" }} onMouseEnter={e => {e.currentTarget.style.color = "var(--gray-400)"; playHover();}} onMouseLeave={e => e.currentTarget.style.color = "inherit"} onClick={playSwitch}>
               Nicole Ho
@@ -1079,11 +1109,9 @@ export default function Portfolio() {
 
             <div
               style={{
-                textAlign: "right",
                 fontWeight: 700,
-                gridColumn: "6 / 7",
-                display: isMobile ? "none" : "flex",
-                justifyContent: "flex-end",
+                display: "flex",
+                justifyContent: isMobile ? "flex-start" : "flex-end",
                 gap: "8px"
               }}
             >
@@ -1133,16 +1161,16 @@ export default function Portfolio() {
 
           <div
             style={{
-              gridRow: 2,
+              gridRow: isMobile ? 4 : 2,
               gridColumn: "1 / -1",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               gap: "8px",
               fontFamily: accentFontFamily,
-              fontSize: "1.5rem",
+              fontSize: isMobile ? "1.25rem" : "1.5rem",
               fontWeight: 700,
-              paddingTop: "80px",
+              paddingTop: isMobile ? "12px" : "80px",
               paddingBottom: "8px",
             }}
           >
@@ -1200,9 +1228,11 @@ export default function Portfolio() {
               position: "sticky",
               top: "var(--nav-height)",
               display: "grid",
-              gridTemplateColumns: tableIndex === 1 ? GRID_PROJECTS : GRID_EXPERIENCES,
+              gridTemplateColumns: isMobile
+                ? "4rem 1fr"
+                : (tableIndex === 1 ? GRID_PROJECTS : GRID_EXPERIENCES),
               gap: "8px",
-              paddingTop: "28px",
+              paddingTop: isMobile ? "8px" : "28px",
               paddingBottom: "4px",
               background: "var(--background)",
               zIndex: 10,
@@ -1219,10 +1249,10 @@ export default function Portfolio() {
                 </div>
               ) : tableIndex === 1 ? "Year" : "Semester"}
             </div>
-            <div style={{ gridColumn: "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
+            <div style={{ gridColumn: isMobile ? "2" : "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
               {tableIndex === 0 ? "Experience" : tableIndex === 1 ? "Project" : "Course"}
             </div>
-            {!isMobile ? (
+            {!isMobile && (
               colHeaders.map(({ label, type }) => (
                 <div
                   key={type}
@@ -1231,10 +1261,6 @@ export default function Portfolio() {
                   {hoveredCol === type ? <span style={{opacity: 0.4 }}>Click to filter</span> : label}
                 </div>
               ))
-            ) : (
-              <div style={{ gridColumn: "span 2", paddingTop: "4px", borderTop: "1px solid var(--gray-300)" }}>
-                Click to filter
-              </div>
             )}
           </div>
 

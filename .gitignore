@@ -1,6 +1,6 @@
 .vscode
-# /assets
 .DS_Store
 old_index.html
 /node_modules
 old_favicon.ico
+/dist
