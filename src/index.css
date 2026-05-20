@@ -95,6 +95,25 @@ ul, ol {
   }
 }
 
+/* ─── Tag tooltips ─── */
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 50;
+  pointer-events: none;
+}
+
 /* ─── Nav link hover ─── */
 .nav-links a:hover,
 .nav-links button:hover,

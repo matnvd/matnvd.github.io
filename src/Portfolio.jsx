@@ -422,37 +422,39 @@ function MetaButton({ type, value, isActive, isHovered, hasActive, onClick, onMo
   const showLabel = !hasActive || isActive || isHovered;
 
   return (
-    <button
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      style={{
-        fontWeight: 700,
-        textAlign: "left",
-        padding: "4px",
-        width: "100%",
-        cursor: "pointer",
-        height: "100%",
-        transition: "background-color 0.15s, opacity 0.15s",
-        backgroundColor: bg,
-        overflow: "hidden",
-        whiteSpace: "nowrap",
-        opacity: revealed ? 1 : 0,
-        fontSize: "inherit",
-      }}
-    >
-      <p
+    <div data-tooltip={value} style={{ height: "100%", minWidth: 0 }}>
+      <button
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         style={{
-          opacity: showLabel ? 1 : 0,
-          transition: "opacity 0.15s",
+          fontWeight: 700,
+          textAlign: "left",
+          padding: "4px",
+          width: "100%",
+          cursor: "pointer",
+          height: "100%",
+          transition: "background-color 0.15s, opacity 0.15s",
+          backgroundColor: bg,
           overflow: "hidden",
-          textOverflow: "ellipsis",
-          color: "#000",
+          whiteSpace: "nowrap",
+          opacity: revealed ? 1 : 0,
+          fontSize: "inherit",
         }}
       >
-        {value}
-      </p>
-    </button>
+        <p
+          style={{
+            opacity: showLabel ? 1 : 0,
+            transition: "opacity 0.15s",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            color: "#000",
+          }}
+        >
+          {value}
+        </p>
+      </button>
+    </div>
   );
 }
 
