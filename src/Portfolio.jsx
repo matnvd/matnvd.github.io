@@ -22,7 +22,7 @@ const EXPERIENCES_DATA = [
     category: ["Dev", "Design"],
     description: "HoagieMeal Team Lead, PM, and Developer",
     technologies: ["Django", "Next.js", "PostgreSQL", "Figma"],
-    url: "https://hoagie.io/"
+    url: "https://meal.hoagie.io/"
   },
   {
     title: "Princeton AI Review",
@@ -33,7 +33,7 @@ const EXPERIENCES_DATA = [
     category: ["Dev", "Data"],
     description: "Backend Lead",
     technologies: ["Django", "Render", "SupaBase",],
-    url: "https://not_yet_made/"  // update
+    url: "https://pair-dj8z.onrender.com/"  // update
   },
   {
     title: "Princeton Vision and Learning Lab",
@@ -292,7 +292,7 @@ const COURSEWORK_DATA = [
     "duration": 4,
     "category": ["Economics", "Seminar"],
     "description": "WRI143",
-    "technologies": ["Research"],
+    "technologies": ["Research", "Data"],
     "url": ""
   },
   {
@@ -356,6 +356,7 @@ const COLOR_MAP = {
   "technologies-figma": "plum",
   "technologies-python": "#ff69b4",
   "technologies-django": "#b0e0e6",
+  "technologies-data": "#87ceeb",
 
   // project colors
   "category-mobile-app": "#6495ed", // same as dev
