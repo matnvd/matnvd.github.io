@@ -865,7 +865,28 @@ export default function Portfolio() {
   const activeData = TABLE_DATA[tableIndex] ?? EXPERIENCES_DATA;
   const timeline = computeTimeline(activeData.length ? activeData : EXPERIENCES_DATA);
   const navRef = useRef(null);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
   const currentYear = new Date().getFullYear();
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    playSwitch();
+    setTableIndex(prev => dx < 0
+      ? (prev + 1) % TABLE_NAMES.length
+      : (prev - 1 + TABLE_NAMES.length) % TABLE_NAMES.length
+    );
+  };
 
   // Cycle accent color
   useEffect(() => {
@@ -987,6 +1008,8 @@ export default function Portfolio() {
 
   return (
     <div
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{
         padding: "0 8px",
         minHeight: "100vh",
