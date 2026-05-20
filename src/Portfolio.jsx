@@ -20,7 +20,7 @@ const EXPERIENCES_DATA = [
     month: 9,
     duration: "present",
     category: ["Dev", "Design"],
-    description: "HoagieMeal PM & Full-Stack Developer",
+    description: "HoagieMeal Team Lead, PM, and Developer",
     technologies: ["Django", "Next.js", "PostgreSQL", "Figma"],
     url: "https://hoagie.io/"
   },
@@ -31,8 +31,8 @@ const EXPERIENCES_DATA = [
     month: 1,
     duration: "present",
     category: ["Dev", "Data"],
-    description: "Data & Archives Lead",
-    technologies: ["Django", "Railway", "SupaBase",],
+    description: "Backend Lead",
+    technologies: ["Django", "Render", "SupaBase",],
     url: "https://not_yet_made/"  // update
   },
   {
@@ -65,7 +65,7 @@ const EXPERIENCES_DATA = [
     duration: "present",
     category: ["Quant", "ML/AI"],
     description: "Competitor",
-    technologies: ["Kaggle", "Jupyter/Colab"],
+    technologies: ["Kaggle", "Jupyter/Colab", "NumPy/Pandas"],
     url: "https://princeton-quant.com/"
   },
   {
@@ -169,8 +169,8 @@ const COURSEWORK_DATA = [
     "year": "Fall 2026",
     "month": 9,
     "duration": 4,
-    "category": ["Operations Research & Financial Engineering"],
-    "description": "ORF309",
+    "category": ["Operations Research & Financial Engineering", "Mathematics"],
+    "description": "ORF309/MAT380",
     "technologies": ["LaTeX"], // add others?
     "url": ""
   },
@@ -350,7 +350,7 @@ const COLOR_MAP = {
   "technologies-unix": "#bababa",
   "technologies-gee": "#91b3f2",
   "technologies-supabase": "#ebdac5",
-  "technologies-railway": "#dfcaae",
+  "technologies-render": "#dfcaae",
   "technologies-jupyter/colab": "#ffe4e1",
   "technologies-kaggle": "#fffacd",
   "technologies-figma": "plum",
@@ -379,6 +379,7 @@ const COLOR_MAP = {
   "technologies-gradio": "#f3add0", //same as newton
   "technologies-git": "#daedf3", // same as quant
   "technologies-numpy/pandas/pytorch": "#ff81c0",
+  "technologies-numpy/pandas": "#ff81c0",
 
   // coursework colors
   "category-computer-science": "tomato", // same as ml/ai
