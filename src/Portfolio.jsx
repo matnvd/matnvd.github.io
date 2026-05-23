@@ -92,7 +92,7 @@ const PROJECTS_DATA = [
     "category": ["ML/AI", "Hackathon"],
     "description": "Hospital triage alert system that monitors 12+ video feeds to identify patient distress",
     "technologies": ["ReactJS", "Pose Detection", "VLMs"],
-    "url": "https://github.com/matnvd/HackPrincetonS26-VITAL"
+    "url": "https://devpost.com/software/vital-ay4d5c"
   },
   {
     "title": "Project R.I.P. (Roleplay Inference Pipeline)",
