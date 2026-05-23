@@ -103,7 +103,7 @@ const PROJECTS_DATA = [
     "category": ["ML/AI", "RAG", "Data", "Scraping"],
     "description": "Modular RAG pipeline for high-fidelity persona agent revival using Gradio.",
     "technologies": ["Python", "LangChain", "Pinecone", /*"Gradio"*/],
-    "url": "https://github.com/matnvd/roleplay-inference-pipeline"
+    "url": "https://huggingface.co/spaces/mathiasnvd/project-rip"
   },
   {
     "title": "Personal Website",
