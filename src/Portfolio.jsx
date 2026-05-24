@@ -33,7 +33,7 @@ const EXPERIENCES_DATA = [
     category: ["Dev", "Data"],
     description: "Backend Lead",
     technologies: ["Django", "Render", "SupaBase",],
-    url: "https://pair-dj8z.onrender.com/"  // update
+    url: "https://github.com/eshgov/PAIR"  // update: https://pair-dj8z.onrender.com/
   },
   {
     title: "Princeton Vision and Learning Lab",
@@ -114,7 +114,7 @@ const PROJECTS_DATA = [
     "category": ["Web Development"],
     "description": "Designer-inspired archive featuring enhanced accessibility and structured project tables.",
     "technologies": ["ReactJS", "HTML/CSS", "Cloudflare"], // + Git + GitHub Pages
-    "url": "https://github.com/matnvd/matnvd.github.io"
+    "url": "https://mathiasnvd.com/"
   },
   {
     "title": "Swappa Listing Alerts",
